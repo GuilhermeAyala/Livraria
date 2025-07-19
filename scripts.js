@@ -18,7 +18,12 @@ let Book1 = new Books("Crime e Castigo", "Dostoievsky", 1886, 50.00, true, 2);
 let Book2 = new Books("Dom Casmurro", "Machado de Assis", 1800, 32.50, true, 2);
 let Book3 = new Books("Os miseráveis", "Victor Hugo", 1862, 45.00, true, 1);
 
-let books = [Book1, Book2, Book3]//estante de livros
+let books = [Book1, Book2, Book3]
+
+function AdicionarLivro(){
+    books.push(new Books("Timtim", "bkabka", 1289, 30.00, true, 1));
+    console.log("Livro adicionado com sucesso!");
+}
 
 function ComprarLivro(){
     let total = books.reduce((acc, book) => acc + book.getTotal(), 0)
@@ -35,5 +40,6 @@ function DetalheDaCompra(){
 
 }
 
+AdicionarLivro();
 ComprarLivro();
 DetalheDaCompra();
