@@ -15,6 +15,7 @@ class Books {
 
 }
 
+let desconto, dinheiro, pagamento, troco, total;
 let Book1 = new Books(0, "Crime e Castigo", "Dostoievsky", 1886, 50.00, true, 2);
 let Book2 = new Books(1, "Dom Casmurro", "Machado de Assis", 1800, 32.50, true, 2);
 let Book3 = new Books(2, "Os miseráveis", "Victor Hugo", 1862, 45.00, true, 1);
@@ -26,8 +27,8 @@ function AdicionarLivro(){
     console.log("Livro adicionado com sucesso!");
 }
 
-function ComprarLivro(){
-    let total = books.reduce((acc, book) => acc + book.getTotal(), 0)
+function ComprarLivro(total){
+    total = books.reduce((acc, book) => acc + book.getTotal(), 0)
     return total;
 }
 
@@ -41,6 +42,35 @@ function DetalheDaCompra(){
 
 }
 
+function FazerPagamento(desconto, dinheiro, pagamento, troco, total){
+    pagamento = "Dinheiro";
+    //console.log("Escolha um metodo de pagamento:")
+    switch(pagamento){
+        case "Cartão de Crédito":
+            desconto = 0.10
+            pagamento = total - (total * desconto);
+            console.log(`O valor total a ser pago é igual a ${pagamento}`);
+            break;
+        
+        case "Dinheiro":
+            dinheiro = 300;
+            pagamento = total
+            if(dinheiro > total){
+                troco = dinheiro - total;
+                console.log(`O valor total a ser pago é igual a ${pagamento}`);
+                console.log(`Seu troco é igual a ${troco}`);
+            }
+            if(dinheiro < total){
+                console.log("A compra não pode ser finalizada, dinheiro insuficiente");
+            }
+            break;
+    }
+
+    console.log("Compra finalizada!");
+
+}
+
 AdicionarLivro();
 ComprarLivro();
 DetalheDaCompra();
+FazerPagamento(ComprarLivro(total));
