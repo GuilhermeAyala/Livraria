@@ -1,55 +1,45 @@
 class Funcionarios {
-    constructor(id, name, salario, cargo, idade){
+    constructor(id, name, salario, cargo, idade, totalVendas){
         this.id = id;
         this.name = name;
         this.salario = salario;
         this.cargo = cargo;
         this.idade = idade;
+        this.totalVendas = totalVendas
     }
 
 }
 
-class Vendedores extends Funcionarios {
-    super(id, name, salario, cargo, idade, totalVendas, bonus){
-        this.totalVendas = this.totalVendas
-        this.bonus = this.bonus
-    }
-}
+let Funcionario1 = new Funcionarios(0, "João", 2000, "Analista", 25, 1000)
+let Funcionario2 = new Funcionarios(1, "Lucas", 4000, "Telemarketing", 28, 3500)
+let ListaFuncionarios = [Funcionario1, Funcionario2]
 
-  
-
-let Funcionario1 = new Funcionarios(0, "João", 2000, "Vendedor", 25, 1000)
-let ListaFuncionarios = [Funcionario1]
-
-function AddFuncionario(){//função funciona
-    ListaFuncionarios.push(new Funcionarios(1, "Maria", 2500, "Supervisora", 26, 1500));
+function AddFuncionario(){//função funciona, mas lembre sempre de chama-la
+    ListaFuncionarios.push(new Funcionarios(2, "Maria", 2500, "Supervisora", 26, 1500));
     console.log("Cadastro do Funcionário feito com sucesso");
 }
 
-function calcularBonus(name, totalVendas, bonus){
-    if(totalVendas < 1000){
-        bonus = totalVendas * 0.10;
-        console.log(`${Funcionario1.name} fez ${totalVendas} e recebeu um bonus de ${bonus}`);
-        return bonus;
+function calcularBonus(funcionario) {
+    const vendas = funcionario.totalVendas;
+    let bonus;
+
+    if (vendas < 1000) {
+        bonus = vendas * 0.10;
+    } 
+    else if (vendas <= 2000) {
+        bonus = vendas * 0.15;
+    } 
+    else if (vendas <= 3000) {
+        bonus = vendas * 0.20;
+    } 
+    else {
+        bonus = vendas * 0.25;
     }
 
-    else if(1000 <= totalVendas && totalVendas <= 2000){
-        bonus = totalVendas * 0.15;
-        console.log(`${Funcionario1.name} fez ${totalVendas} e recebeu um bonus de ${bonus}`);
-        return bonus;
-    }
-    else if(2000 < totalVendas && totalVendas <= 3000){
-        bonus = totalVendas * 0.20;
-        console.log(`${Funcionario1.name} fez ${totalVendas} e recebeu um bonus de ${bonus}`);
-        return bonus;
-    }
-    else{
-        bonus = totalVendas * 0.25;
-        console.log(`${Funcionario1.name} fez ${totalVendas} e recebeu um bonus de ${bonus}`);
-        return bonus;
-    }
-
+    console.log(`${funcionario.name} vendeu um total de R$${vendas} e recebeu um bônus de R$${bonus.toFixed(2)}`);
+    return bonus;
 }
 
-calcularBonus(Funcionario1);
-
+AddFuncionario();
+//console.log(ListaFuncionarios);
+calcularBonus(ListaFuncionarios[2]);

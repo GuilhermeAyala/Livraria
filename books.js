@@ -27,9 +27,10 @@ function AdicionarLivro(){
     console.log("Livro adicionado com sucesso!");
 }
 
-function ComprarLivro(total){
-    total = books.reduce((acc, book) => acc + book.getTotal(), 0)
+function ComprarLivro(total){//sem retorno no console, função auxiliar que retorna o valor total para uso em outras funções
+    total = books.reduce((acc, book) => acc + book.getTotal(), 0);
     return total;
+    
 }
 
 function DetalheDaCompra(){
@@ -43,12 +44,13 @@ function DetalheDaCompra(){
 }
 
 function FazerPagamento(desconto, dinheiro, pagamento, troco, total){
+    total = ComprarLivro(total);
     pagamento = "Dinheiro";
-    //console.log("Escolha um metodo de pagamento:")
+
     switch(pagamento){
         case "Cartão de Crédito":
             desconto = 0.10
-            pagamento = total - (total * desconto);
+            pagamento = ComprarLivro(total) - (total * desconto);
             console.log(`O valor total a ser pago é igual a ${pagamento}`);
             break;
         
@@ -69,8 +71,9 @@ function FazerPagamento(desconto, dinheiro, pagamento, troco, total){
     console.log("Compra finalizada!");
 
 }
+//todas as funções estão funcionado 
 
-AdicionarLivro();
-ComprarLivro();
-DetalheDaCompra();
-FazerPagamento(ComprarLivro(total));
+//AdicionarLivro();
+//ComprarLivro();
+//DetalheDaCompra();
+FazerPagamento();
