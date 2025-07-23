@@ -5,5 +5,6 @@ Classes:
 -Books
 -Funcionarios
 -User
+-Carrinho
 
 Fazer requisitos, montar um ux/ui para seguir, definir arquitetura(provavelmente mvc)
