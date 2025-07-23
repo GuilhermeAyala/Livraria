@@ -76,4 +76,4 @@ function FazerPagamento(desconto, dinheiro, pagamento, troco, total){
 //AdicionarLivro();
 //ComprarLivro();
 //DetalheDaCompra();
-FazerPagamento();
+//FazerPagamento();
