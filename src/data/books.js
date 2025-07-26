@@ -1,4 +1,4 @@
-class Books {
+export class Books {
     constructor(id, name, autor, year, price, isAvailable, quantidade){
         this.id = id;
         this.name = name;
@@ -22,18 +22,18 @@ let Book3 = new Books(2, "Os miseráveis", "Victor Hugo", 1862, 45.00, true, 1);
 
 let books = [Book1, Book2, Book3]
 
-function AdicionarLivro(){
+export function AdicionarLivro(){
     books.push(new Books(3, "Hamlet", "William Shakespeare", 1623, 42.00, true, 1));
     console.log("Livro adicionado com sucesso!");
 }
 
-function ComprarLivro(total){//sem retorno no console, função auxiliar que retorna o valor total para uso em outras funções
+export function ComprarLivro(total){//sem retorno no console, função auxiliar que retorna o valor total para uso em outras funções
     total = books.reduce((acc, book) => acc + book.getTotal(), 0);
     return total;
     
 }
 
-function DetalheDaCompra(){
+export function DetalheDaCompra(){
     console.log("Descrição da compra:")
     books.forEach(book => {
         console.log(`Nome do livro:${book.name}, Autor:${book.autor}, Valor:${book.price}, Quantidade:${book.quantidade}`)
@@ -43,7 +43,7 @@ function DetalheDaCompra(){
 
 }
 
-function FazerPagamento(desconto, dinheiro, pagamento, troco, total){
+export function FazerPagamento(desconto, dinheiro, pagamento, troco, total){
     total = ComprarLivro(total);
     pagamento = "Dinheiro";
 
@@ -71,8 +71,9 @@ function FazerPagamento(desconto, dinheiro, pagamento, troco, total){
     console.log("Compra finalizada!");
 
 }
-//todas as funções estão funcionado 
 
+export { books };
+//todas as funções estão funcionado 
 //AdicionarLivro();
 //ComprarLivro();
 //DetalheDaCompra();

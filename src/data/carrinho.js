@@ -1,5 +1,5 @@
 import { AdicionarLivro, DetalheDaCompra, FazerPagamento} from '.books.js'
-import Books from './books.js';
+import Books from './src/data/books.js';
 
 class Carrinho extends Books{
     constructor(id, name, price, quantidade){
@@ -18,3 +18,5 @@ console.log(ListaCarrinho);
 
 DetalheDaCompra();
 
+//continuar depois
+// A ideia é consegur adicionar ao carrinho os produtos, seus valores calculados, com nome, id e etc 
