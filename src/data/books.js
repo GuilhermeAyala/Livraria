@@ -22,10 +22,18 @@ let Book3 = new Books(2, "Os miseráveis", "Victor Hugo", 1862, 45.00, true, 1);
 
 let books = [Book1, Book2, Book3]
 
-export function AdicionarLivro(){
-    books.push(new Books(3, "Hamlet", "William Shakespeare", 1623, 42.00, true, 1));
-    console.log("Livro adicionado com sucesso!");
+export function AdicionarLivros(...novosLivros){
+    novosLivros.forEach(book =>{
+        books.push(book);
+    });
+
+    console.log(`${novosLivros.length} livro(s) adicionados com sucesso!`);
+    return books;
 }
+AdicionarLivros(
+    new Books(3, "Hamlet", "William Shakespeare", 1623, 42.00, true, 1),
+    new Books(4, "O Poderoso Chefão", "Mario Puzo", 196, 20.00, true, 1),
+);
 
 export function ComprarLivro(total){//sem retorno no console, função auxiliar que retorna o valor total para uso em outras funções
     total = books.reduce((acc, book) => acc + book.getTotal(), 0);
@@ -74,7 +82,7 @@ export function FazerPagamento(desconto, dinheiro, pagamento, troco, total){
 
 export { books };
 //todas as funções estão funcionado 
-//AdicionarLivro();
+//AdicionarLivros();
 //ComprarLivro();
 //DetalheDaCompra();
 //FazerPagamento();
