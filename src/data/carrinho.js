@@ -1,5 +1,5 @@
-import { AdicionarLivro, DetalheDaCompra, FazerPagamento} from '.books.js'
-import Books from './books.js';
+import { AdicionarLivro, DetalheDaCompra, FazerPagamento} from './books'
+import Books from './books';
 
 class Carrinho extends Books{
     constructor(id, name, price, quantidade){
