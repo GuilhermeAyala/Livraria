@@ -1,6 +1,6 @@
 import React from 'react';
 import ListaBooks from './components/ListaBooks';
-//import ShowCarrinho from './components/Carrinho';
+import ShowCarrinho from './components/Carrinho';
 
 function App() {
   return (
@@ -8,8 +8,8 @@ function App() {
       <h1>Livraria</h1>
       <ListaBooks/>
 
-
-      <h2>Compras</h2>
+      <h1>Carrinho</h1>
+      <ShowCarrinho/>
     </div>
 
   );

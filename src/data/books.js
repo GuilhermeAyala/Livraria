@@ -45,6 +45,9 @@ export function DetalheDaCompra(){
     console.log("Descrição da compra:")
     books.forEach(book => {
         console.log(`Nome do livro:${book.name}, Autor:${book.autor}, Valor:${book.price}, Quantidade:${book.quantidade}`)
+        return books.forEach(book => {
+            {book.name}{book.autor}{book.price}{book.quantidade}
+        })
     });
 
     console.log(`Valor total: ${ComprarLivro()} reais`)
@@ -82,7 +85,3 @@ export function FazerPagamento(desconto, dinheiro, pagamento, troco, total){
 
 export { books };
 //todas as funções estão funcionado 
-//AdicionarLivros();
-//ComprarLivro();
-//DetalheDaCompra();
-//FazerPagamento();
