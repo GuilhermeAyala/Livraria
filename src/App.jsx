@@ -10,6 +10,7 @@ function App() {
 
       <h1>Carrinho</h1>
       <ShowCarrinho/>
+      
     </div>
 
   );

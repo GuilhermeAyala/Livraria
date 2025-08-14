@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Carrinho } from '../data/carrinho';
-import { Books } from '../data/books'
+import { Books } from '../data/books';
 
 const ShowCarrinho = () => {
     const [metodoPagamento, setMetodoPagamento] = useState("Dinheiro");
@@ -11,7 +11,7 @@ const ShowCarrinho = () => {
         new Books(2, "Os Miseráveis", "Victor Hugo", 1862, 45.00, true, 1)
     ]);
 
-    const detalhes = carrinho.detalheDaCompra();
+    const detalheCompra = carrinho.detalheDaCompra();
     const resultadoPagamento = carrinho.finalizarPagamento(metodoPagamento, dinheiroDisponivel);
 
     return (
@@ -24,16 +24,16 @@ const ShowCarrinho = () => {
                         <th>Livro</th>
                         <th>Preço</th>
                         <th>Quantidade</th>
-                        <th>Subtotal</th>
+                        <th>Total</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {detalhes.map((book, index) => (
+                    {detalheCompra.map((book, index) => (
                         <tr key={index}>
                             <td>{book.nome}</td>
                             <td>R$ {book.valor.toFixed(2)}</td>
                             <td>{book.quantidade}</td>
-                            <td>R$ {book.subtotal.toFixed(2)}</td>
+                            <td>R$ {book.total.toFixed(2)}</td>
                         </tr>
                     ))}
                 </tbody>
@@ -68,7 +68,7 @@ const ShowCarrinho = () => {
             </div>
 
             <div style={{ marginTop: '30px' }}>
-                <h3>🧾 Total da Compra: R$ {resultadoPagamento.total.toFixed(2)}</h3>
+                <h3>🧾 Total da Compra: R$ {resultadoPagamento?.total.toFixed(2)}</h3>
                 {metodoPagamento === "Cartão de Crédito" && (
                     <p>💳 Com 10% de desconto: <strong>R$ {resultadoPagamento.pagamentoFinal.toFixed(2)}</strong></p>
                 )}
@@ -84,7 +84,7 @@ const ShowCarrinho = () => {
             </div>
         </div>
     );
+    
 };
-
 
 export default ShowCarrinho;

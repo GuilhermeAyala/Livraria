@@ -15,7 +15,7 @@ export class Books {
 
 }
 
-let desconto, dinheiro, pagamento, troco, total;
+let desconto, dinheiroDisponivel, pagamento, metodoPagamento, troco, total;
 let Book1 = new Books(0, "Crime e Castigo", "Dostoievsky", 1886, 50.00, true, 2);
 let Book2 = new Books(1, "Dom Casmurro", "Machado de Assis", 1800, 32.50, true, 2);
 let Book3 = new Books(2, "Os miseráveis", "Victor Hugo", 1862, 45.00, true, 1);
@@ -41,24 +41,25 @@ export function ComprarLivro(total){//sem retorno no console, função auxiliar 
     
 }
 
-export function DetalheDaCompra(){
+export function DetalheDaCompra(books){
     console.log("Descrição da compra:")
-    books.forEach(book => {
-        console.log(`Nome do livro:${book.name}, Autor:${book.autor}, Valor:${book.price}, Quantidade:${book.quantidade}`)
-        return books.forEach(book => {
-            {book.name}{book.autor}{book.price}{book.quantidade}
-        })
-    });
-
-    console.log(`Valor total: ${ComprarLivro()} reais`)
-
+    //books.forEach(book => {
+        //console.log(`Nome do livro:${book.name}, Autor:${book.autor}, Valor:${book.price}, Quantidade:${book.quantidade}`)
+        return books.map(book => ({
+            name: book.name, 
+            autor: book.autor,
+            price:book.price,
+            quantidade: book.quantidade,
+            total: book.getTotal()
+        }));
+            
 }
 
-export function FazerPagamento(desconto, dinheiro, pagamento, troco, total){
+export function FazerPagamento(desconto, dinheiroDisponivel, pagamento, metodoPagamento, troco, total){
     total = ComprarLivro(total);
-    pagamento = "Dinheiro";
+    metodoPagamento = "Dinheiro";
 
-    switch(pagamento){
+    switch(metodoPagamento){
         case "Cartão de Crédito":
             desconto = 0.10
             pagamento = ComprarLivro(total) - (total * desconto);
@@ -66,20 +67,28 @@ export function FazerPagamento(desconto, dinheiro, pagamento, troco, total){
             break;
         
         case "Dinheiro":
-            dinheiro = 300;
+            dinheiroDisponivel = 300;
             pagamento = total
-            if(dinheiro > total){
-                troco = dinheiro - total;
+            if(dinheiroDisponivel > total){
+                troco = dinheiroDisponivel - total;
                 console.log(`O valor total a ser pago é igual a ${pagamento}`);
                 console.log(`Seu troco é igual a ${troco}`);
             }
-            if(dinheiro < total){
+            if(dinheiroDisponivel < total){
                 console.log("A compra não pode ser finalizada, dinheiro insuficiente");
+                return { sucesso: false};
             }
             break;
     }
-
     console.log("Compra finalizada!");
+    console.log(`Seu método de pagamento é ${metodoPagamento}`);
+
+    return{
+        sucesso: true,
+        metodoPagamento, 
+        total, 
+        troco
+    };
 
 }
 
