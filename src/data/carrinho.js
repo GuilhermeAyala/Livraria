@@ -1,9 +1,8 @@
-// Carrinho.js
 import { ComprarLivro, DetalheDaCompra, FazerPagamento } from './books.js';
 
 export class Carrinho {
     constructor(books = []) {
-        this.books = books;
+        this.books = Array.isArray(books) ? books : [];
     }
 
     adicionarLivro(book) {
@@ -20,7 +19,7 @@ export class Carrinho {
 
     finalizarPagamento(metodoPagamento, dinheiroDisponivel = 0) {
     const desconto = metodoPagamento === "Cartão de Crédito" ? 0.1 : 0;
-    const total = this.books.reduce((acc, book) => acc + book.valor * book.quantidade, 0);
+    const total = this.books.reduce((acc, book) => acc + book.price * book.quantidade, 0);
     const pagamento = total * (1 - desconto);
     const troco = metodoPagamento === "Dinheiro" ? dinheiroDisponivel - pagamento : 0;
 
@@ -28,5 +27,3 @@ export class Carrinho {
 }
 
 }
-
-export { Carrinho };

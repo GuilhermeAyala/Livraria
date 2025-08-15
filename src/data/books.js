@@ -33,6 +33,7 @@ export function AdicionarLivros(...novosLivros){
 AdicionarLivros(
     new Books(3, "Hamlet", "William Shakespeare", 1623, 42.00, true, 1),
     new Books(4, "O Poderoso Chefão", "Mario Puzo", 196, 20.00, true, 1),
+    new Books(5, "1984", "George Orwell", 1949, 45.00, true, 1),
 );
 
 export function ComprarLivro(total){//sem retorno no console, função auxiliar que retorna o valor total para uso em outras funções
@@ -41,19 +42,26 @@ export function ComprarLivro(total){//sem retorno no console, função auxiliar 
     
 }
 
-export function DetalheDaCompra(books){
-    console.log("Descrição da compra:")
-    //books.forEach(book => {
-        //console.log(`Nome do livro:${book.name}, Autor:${book.autor}, Valor:${book.price}, Quantidade:${book.quantidade}`)
-        return books.map(book => ({
-            name: book.name, 
-            autor: book.autor,
-            price:book.price,
-            quantidade: book.quantidade,
-            total: book.getTotal()
-        }));
-            
+export function DetalheDaCompra(books) {
+  const arr = Array.isArray(books) ? books : [];
+  console.log('DetalheDaCompra recebeu', arr.length, 'itens');
+
+  return arr.map((book) => {
+    const price = Number(book?.price ?? 0);
+    const quantidade = Number(book?.quantidade ?? 0);
+
+    return {
+      name: book?.name ?? '',
+      autor: book?.autor ?? '',
+      price,
+      quantidade,
+      total: typeof book?.getTotal === 'function'
+        ? book.getTotal()
+        : price * quantidade
+    };
+  });
 }
+
 
 export function FazerPagamento(desconto, dinheiroDisponivel, pagamento, metodoPagamento, troco, total){
     total = ComprarLivro(total);
@@ -67,7 +75,7 @@ export function FazerPagamento(desconto, dinheiroDisponivel, pagamento, metodoPa
             break;
         
         case "Dinheiro":
-            dinheiroDisponivel = 300;
+            dinheiroDisponivel = 500;
             pagamento = total
             if(dinheiroDisponivel > total){
                 troco = dinheiroDisponivel - total;
@@ -92,5 +100,6 @@ export function FazerPagamento(desconto, dinheiroDisponivel, pagamento, metodoPa
 
 }
 
+FazerPagamento();
 export { books };
 //todas as funções estão funcionado 

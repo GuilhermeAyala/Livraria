@@ -1,6 +1,6 @@
 import React from 'react';
 import ListaBooks from './components/ListaBooks';
-import ShowCarrinho from './components/Carrinho';
+import CarrinhoView from './components/Carrinho';
 
 function App() {
   return (
@@ -9,8 +9,8 @@ function App() {
       <ListaBooks/>
 
       <h1>Carrinho</h1>
-      <ShowCarrinho/>
-      
+      <CarrinhoView/>
+
     </div>
 
   );
