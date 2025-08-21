@@ -4,7 +4,7 @@ import { books } from "../data/books";
 function ListaBooks() {
   return (
     <div>
-      <h2>Livros Disponíveis:</h2>
+      <h4>Livros Disponíveis:</h4>
       <ul style={ {display:"flex", listStyle: "none"} }>
         {books.map((book) => (
           <li key={book.id} style={ {width: 250, height: 220, border: 2, borderStyle: "solid", borderRadius: 10, padding: 5, alignItems: "center"} }>
