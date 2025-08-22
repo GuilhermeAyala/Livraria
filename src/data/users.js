@@ -15,13 +15,13 @@ let Usuario1 = new User(0, "Pedro", "pedro@gmail.com", 242424, 54321, 0);
 
 let Users = [Usuario1];
 
-function AddUser(...novosUsers){//a função adiciona, mas a verificação não está funcionando, corrigir depois
+function AddUser(...novosUsers){
     novosUsers.forEach((user) => {
         if(!user || typeof user !== 'object'){
             console.log(`Objeto inválido`);
         }
         if(user.id === null || typeof user.id !== 'number'){
-            console.log(`Id inexistente ou inválido`);
+            console.log(`Id inexistente ou inválido`)
         }     
         if(typeof user.name !== "string"){
             console.log(`Nome precisa ser uma string`)
@@ -33,7 +33,7 @@ function AddUser(...novosUsers){//a função adiciona, mas a verificação não 
             console.log("CPF deve ter só numeros, não pode ser vazio")
         }
         else{
-            Users.push(Users);
+            Users.push(user);
         }
         return Users;
     })
@@ -44,6 +44,4 @@ AddUser(
     new User(2, "Maria", "maria@gmail.com", 23290 , 22222, 2),
 )
 
-AddUser();
-console.log(Users);
 export {User, Users};

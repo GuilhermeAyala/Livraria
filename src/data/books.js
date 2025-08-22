@@ -101,4 +101,3 @@ export function FazerPagamento(desconto, dinheiroDisponivel, pagamento, metodoPa
 }
 
 export { books };
-//todas as funções estão funcionado 

@@ -30,7 +30,6 @@ export default function CarrinhoView() {
     [detalhes]
 
   const finalizar = () => {
-    // Sua implementação atual usa "Dinheiro" internamente com 300, então mantive simples
     const resultado = carrinho.finalizarPagamento('Dinheiro', 300);
     if (resultado?.sucesso) {
       alert(`Compra finalizada! Método: ${resultado.metodoPagamento} | Total: ${resultado.total} | Troco: ${resultado.troco ?? 0}`);
