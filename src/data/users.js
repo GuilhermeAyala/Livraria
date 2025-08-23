@@ -9,7 +9,6 @@ class User {
     }
 
 }
-//passar dps condicionais para os campos da classe
 
 let Usuario1 = new User(0, "Pedro", "pedro@gmail.com", 242424, 54321, 0);
 

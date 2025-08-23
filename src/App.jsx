@@ -24,9 +24,6 @@ function App() {
 
 
       <h2>Lista de Livros</h2>
-      <ListaBooks/>
-
-      <h1>Carrinho</h1>
       <CarrinhoView/>
 
     </div>

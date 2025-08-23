@@ -1,7 +1,7 @@
 import React from "react";
 import { books } from "../data/books";
 
-function ListaBooks() {
+export default function ListaBooks({ handleAdicionarLivro }) {
   return (
     <div>
       <h4>Livros Disponíveis:</h4>
@@ -11,11 +11,11 @@ function ListaBooks() {
             <h4>Titulo: {book.name}</h4>  
             <h5>Autor: {book.autor}</h5>
             <h5>Preço: R${book.price.toFixed(2)}</h5>
+            <button  onClick={() => {
+              handleAdicionarLivro(book)} } style={{borderRadius: 10, padding: 8, backgroundColor: "grey"}}>Adicionar ao Carrinho</button>
           </li>
         ))}
       </ul>
     </div>
   );
 }
-
-export default ListaBooks;

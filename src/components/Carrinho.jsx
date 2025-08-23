@@ -1,35 +1,53 @@
 import React, { useMemo, useState } from 'react';
 import { Carrinho } from '../data/carrinho.js';
 import { books } from '../data/books.js';
+import ListaBooks from './ListaBooks.jsx';
 
 export default function CarrinhoView() {
   const carrinho = useMemo(() => new Carrinho(books), []);
+  const [livrosNoCarrinho, setLivrosNoCarrinho] = useState(carrinho.books)
   const [, setTick] = useState(0); // só para forçar re-render quando mudamos quantidades/removemos
   const forceUpdate = () => setTick((v) => v + 1);
 
+  const handleAdicionarLivro = (book) => {
+  setLivrosNoCarrinho((prev) => {
+    const existe = prev.find((b) => b.id === book.id);
+    if (existe) {
+      return prev.map((b) =>
+        b.id === book.id ? { ...b, quantidade: b.quantidade + 1 } : b
+      );
+    } else {
+      return [...prev, { ...book, quantidade: 1 }];
+    }
+  });
+};
+
+
   const handleQtdChange = (id, qtd) => {
-    const item = carrinho.books.find((b) => b.id === id);
-    if (!item) return;
-    item.quantidade = Math.max(0, Number(qtd) || 0); // atualiza direto o objeto existente
-    forceUpdate();
+    setLivrosNoCarrinho((prev) => 
+      prev.map((b) =>
+        b.id === id ? {...b, quantidade: Math.max(0, Number(qtd) || 0)} : b
+      )
+    );
   };
 
   const handleRemover = (id) => {
-    const idx = carrinho.books.findIndex((b) => b.id === id);
-    if (idx >= 0) {
-      carrinho.books.splice(idx, 1); // remove do mesmo array (mantém compatibilidade com suas funções)
-      forceUpdate();
-    }
-  };
+    setLivrosNoCarrinho((prev) => prev.filter((b) => b.id !== id));
+    };
 
   const detalhes = useMemo(() => carrinho.detalheDaCompra(), [carrinho, /* re-render */]);
-  const subtotal = carrinho.books.reduce(
+  const subtotal = livrosNoCarrinho.reduce(
     (acc, b) => acc + (Number(b.price) || 0) * (Number(b.quantidade) || 0),
     0
   );
     [detalhes]
 
   const finalizar = () => {
+    const total = livrosNoCarrinho.reduce(
+      (acc, b) => acc + (Number(b.price) || 0) * (Number(b.quantidade) || 0),
+      0
+    );
+    
     const resultado = carrinho.finalizarPagamento('Dinheiro', 300);
     if (resultado?.sucesso) {
       alert(`Compra finalizada! Método: ${resultado.metodoPagamento} | Total: ${resultado.total} | Troco: ${resultado.troco ?? 0}`);
@@ -44,8 +62,10 @@ export default function CarrinhoView() {
 
   return (
     <div style={{ padding: 16 }}>
-      <h2>🛍 Carrinho</h2>
+      
+      <ListaBooks handleAdicionarLivro={handleAdicionarLivro} />
 
+    <h1>🛍 Carrinho</h1>
       <table border="1" cellPadding="8" style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr>
@@ -58,7 +78,7 @@ export default function CarrinhoView() {
           </tr>
         </thead>
         <tbody>
-          {carrinho.books.map((book) => (
+          {livrosNoCarrinho.map((book) => (
             <tr key={book.id}>
               <td>{book.name}</td>
               <td>{book.autor}</td>
@@ -72,7 +92,7 @@ export default function CarrinhoView() {
                   style={{ width: 60 }}
                 />
               </td>
-              <td>R$ {Number(book.getTotal()).toFixed(2)}</td>
+              <td>R$ {(book.price * book.quantidade).toFixed(2)}</td>
               <td>
                 <button onClick={() => handleRemover(book.id)}>Remover</button>
               </td>
@@ -89,5 +109,6 @@ export default function CarrinhoView() {
         <button style={{width: 200, height: 50, backgroundColor: "red", borderRadius: 10, color:"white"}} onClick={finalizar}>Finalizar compra</button>
       </div>
     </div>
-  );
-}
+  )
+
+};
