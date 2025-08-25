@@ -14,7 +14,7 @@ let Funcionario1 = new Funcionarios(0, "João", 2000, "Analista", 25, 1000)
 let Funcionario2 = new Funcionarios(1, "Lucas", 4000, "Telemarketing", 28, 3500)
 let ListaFuncionarios = [Funcionario1, Funcionario2]
 
-function AddFuncionario(){//função funciona, mas lembre sempre de chama-la
+function AddFuncionario(){
     ListaFuncionarios.push(new Funcionarios(2, "Maria", 2500, "Supervisora", 26, 1500));
     console.log("Cadastro do Funcionário feito com sucesso");
 }
@@ -41,5 +41,4 @@ function calcularBonus(funcionario) {
 }
 
 AddFuncionario();
-//console.log(ListaFuncionarios);
 calcularBonus(ListaFuncionarios[2]);
