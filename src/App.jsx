@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import ListaBooks from './components/ListaBooks';
 import CarrinhoView from './components/Carrinho';
 import FormUser from './components/FormUser';
+import AdminInterface from './components/AdminView';
 
 function App() {
   const [usuario, setUsuario] = useState(null);
@@ -25,6 +25,9 @@ function App() {
 
       <h2>Lista de Livros</h2>
       <CarrinhoView/>
+
+      <h4>Teste da Área do Adm</h4>
+      <AdminInterface/>
 
     </div>
 
