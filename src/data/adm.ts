@@ -42,6 +42,4 @@ const AdicionarFuncionarios = (...novosFuncionarios) => {
     });
 }
 
-console.log("Hello");
-
 const GerenciarEstoque = () => {}
