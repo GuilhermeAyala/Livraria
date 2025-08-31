@@ -1,5 +1,6 @@
 import React, {useState} from "react";
-import { Books } from "../data/books";
+import { AdicionarLivros, Books } from "../data/books";
+import { adicionarFuncionario  } from "../data/adm";
 //import { Admin } from "../data/adm"; 
 
 type Produto = {
@@ -15,6 +16,7 @@ type Funcionario = {
     salario: number,
     cargo: string,
     idade: number,
+    totalDeVendas: number,
 }
 
 function AdminInterface(){
@@ -47,7 +49,7 @@ function AdminInterface(){
 
     };
 
-    const CadastroFuncionario = (e) => {
+    const CadastroFuncionario = async (e) => {
         e.preventDefault();
 
         const novoFuncionario: Funcionario = {
@@ -55,9 +57,19 @@ function AdminInterface(){
             salario: Number(salario),
             cargo, 
             idade: Number(idade),
-        }
+            totalDeVendas: Number(),
+        };
+
         setJsonInfo(novoFuncionario);
-    }
+
+        try{
+            await adicionarFuncionario(novoFuncionario);
+            console.log("Funcionario cadastrado com sucesso");
+        }
+        catch(erro){
+            console.error("Erro ao cadastrar funcionario", erro);
+        }
+    };
 
     const IncrementQtd = () => {
         setCount(count + 1);
@@ -71,12 +83,28 @@ function AdminInterface(){
         return count;
     }
 
-    const AddLivroAoSistema = () => {//n faz nd por enqt, ver a logica depois
-        const ObjectBook = JSON.stringify({book: [new Books()]})
+    const AddLivroAoSistema = async() => {
+        if(jsonDados){
+            try{
+                await AdicionarLivros(jsonDados);
+                console.log("Livro enviado com sucesso");
+            }
+            catch(erro){
+                console.error("Erro ao enviar livro", erro);
+            }
+        }
     }
 
-    const AddFuncionarioAoSistema = () => {
-        const ObjectFuncionario = JSON.stringify;// por enqt vazio, ideia: criar um objeto de funcionario para BD
+    const AddFuncionarioAoSistema = async () => {
+        if(jsonInfo){
+            try {
+                await adicionarFuncionario(jsonInfo);
+                console.log("Funcionario enviado com sucesso")
+            }
+            catch(erro){
+                console.error("Erro no envio do formulário", erro);
+            }
+        }
     }
 
     return(//pd virar json pro BD, além da parte react 
@@ -115,7 +143,7 @@ function AdminInterface(){
                 onChange={(e) => setCargo(String(e.target.value))} style={{height: 30, borderRadius: 15}}></input>
                 <input type="number" value={idade} placeholder="Idade Funcionario" 
                 onChange={(e) => setIdade(Number(e.target.value))} style={{height: 30, borderRadius: 15}}></input><br />
-                <button onClick={AddFuncionarioAoSistema} 
+                <button onClick={AddFuncionarioAoSistema}
                 style={{width: 150, height: 60, borderRadius: 15, backgroundColor: "red", color: "white"}}>Adicionar Funcionário ao Sistema</button>
                 {jsonInfo && (<pre>{JSON.stringify(jsonInfo, null, 2)}</pre>)}
             </form>

@@ -14,14 +14,12 @@ export class Admin {
 }
 
 class Funcionarios {
-    id;
     name;
     salario; 
     cargo;
     idade;
     totalDeVendas;
-    constructor(id: number, name: string, salario: number, cargo: string, idade: number, totalDeVendas: number){
-        this.id = id;
+    constructor(name: string, salario: number, cargo: string, idade: number, totalDeVendas: number){
         this.name = name;
         this.salario = salario;
         this.cargo = cargo;
@@ -32,16 +30,25 @@ class Funcionarios {
 
 const Admin1 = new Admin(0, "Peter", "peter@gmail.com", 12345)
 
-let Funcionario1 = new Funcionarios(0, "Lucas", 1200, "Vendedor", 25, 1500)
-let ArrayFuncionarios = [Funcionario1];
+let Funcionario1 = new Funcionarios("Lucas", 1200, "Vendedor", 25, 1500)
 
-const AdicionarFuncionarios = (...novosFuncionarios) => {
-    novosFuncionarios.forEach(funcionario => {
-        ArrayFuncionarios.push();
-        return ArrayFuncionarios;
-    });
+export async function adicionarFuncionario(funcionario: Funcionarios): Promise<void>{
+    try {
+        const resposta = await fetch('http://localhost:3000/api/funcionarios', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(funcionario),
+        });
+
+        if(!resposta.ok){
+            throw new Error("Erro ao adicionar funcionário");
+        }
+        console.log('Funcionario adicionado com sucesso');
+    } catch (error) {
+        console.log('Erro:', error)
+    }
 }
-
-console.log("Hello");
 
 const GerenciarEstoque = () => {}
