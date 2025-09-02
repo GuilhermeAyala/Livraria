@@ -15,3 +15,5 @@ Classes:
 -Funcionario
 
 Montar arquitetura, ux/ui e etc
+
+npx prisma db pull para atualizar o banco de dados e npx prisma studio para ver seu localhost 
