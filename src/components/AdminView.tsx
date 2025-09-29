@@ -33,6 +33,7 @@ function AdminInterface(){
     let [salario, setSalario] = useState<number>();
     let [cargo, setCargo] = useState<string>('');
     let [idade, setIdade] = useState<number>();
+    let [totalDeVendas, setTotalDeVendas] = useState<number>(0);
     let [jsonInfo, setJsonInfo] = useState<Funcionario | null>(null);
 
     const handleSubmit = (e) => {
@@ -93,7 +94,7 @@ function AdminInterface(){
                 console.error("Erro ao enviar livro", erro);
             }
         }
-    }
+    };
 
     const AddFuncionarioAoSistema = async () => {
         if(jsonInfo){
@@ -143,6 +144,8 @@ function AdminInterface(){
                 onChange={(e) => setCargo(String(e.target.value))} style={{height: 30, borderRadius: 15}}></input>
                 <input type="number" value={idade} placeholder="Idade Funcionario" 
                 onChange={(e) => setIdade(Number(e.target.value))} style={{height: 30, borderRadius: 15}}></input><br />
+                <input type="number" value={totalDeVendas} placeholder="Total de Vendas Funcionario" 
+                onChange={(e) => setTotalDeVendas(Number(e.target.value))} style={{height: 30, borderRadius: 15}}></input><br />
                 <button onClick={AddFuncionarioAoSistema}
                 style={{width: 150, height: 60, borderRadius: 15, backgroundColor: "red", color: "white"}}>Adicionar Funcionário ao Sistema</button>
                 {jsonInfo && (<pre>{JSON.stringify(jsonInfo, null, 2)}</pre>)}

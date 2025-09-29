@@ -26,7 +26,7 @@ class Funcionarios {
     }
 }
 
-class Books {
+class Livro {
     name: string;
     price: number;
     autor: string;
@@ -65,7 +65,7 @@ export async function adicionarFuncionario(funcionario: Funcionarios): Promise<v
     }
 }
 
-export async function AdicionarLivros(livro: Books): Promise<void> {
+export async function AdicionarLivros(livro: Livro): Promise<void> {
   try {
     const resposta = await fetch('http://localhost:3000/api/livros', {
       method: 'POST',
