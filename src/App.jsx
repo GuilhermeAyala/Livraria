@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Menu from './components/Menu';
 import CarrinhoView from './components/Carrinho';
 import FormUser from './components/FormUser';
 import AdminInterface from './components/AdminView';
@@ -22,7 +23,8 @@ function App() {
         </pre>
       )}
 
-
+      <Menu/>
+    
       <h2>Lista de Livros</h2>
       <CarrinhoView/>
 

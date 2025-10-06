@@ -36,7 +36,7 @@ function AdminInterface(){
     let [totalDeVendas, setTotalDeVendas] = useState<number>(0);
     let [jsonInfo, setJsonInfo] = useState<Funcionario | null>(null);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e:any) => {
         e.preventDefault();
 
         const novoProduto: Produto = {
@@ -50,7 +50,7 @@ function AdminInterface(){
 
     };
 
-    const CadastroFuncionario = async (e) => {
+    const CadastroFuncionario = async (e:any) => {
         e.preventDefault();
 
         const novoFuncionario: Funcionario = {
