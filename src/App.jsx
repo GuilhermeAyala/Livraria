@@ -24,10 +24,8 @@ function App() {
       )}
 
       <Menu/>
-    
       <h2>Lista de Livros</h2>
       <CarrinhoView/>
-
       <h4>Teste da Área do Adm</h4>
       <AdminInterface/>
 

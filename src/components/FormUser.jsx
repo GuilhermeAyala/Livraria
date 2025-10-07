@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function FormUser({ onSubmit }){
     const [form, setForm] = useState({nome:'', email:'', senha:''});
@@ -23,19 +24,31 @@ function FormUser({ onSubmit }){
     }
 
     function handleSubmit(e){
-        e.preventDefault();;
+        e.preventDefault();
         const message = ValidarForm(form)
         if(message){
             setErro(message)
         }
         setErro('');
         onSubmit?.(form);
-        setForm({ nome:'', email:'', senha:''});
+
+    if(form.email.endsWith('@admin')){
+        navigate('/admin');
     }
+    else if(form.email.endsWith('@usuario')){
+        navigate('/usuario');
+    }
+    else{
+        alert('Email tem que ter @admin ou @usuario');
+    }
+
+    setForm({nome: '', email: '', senha:'' });
+}
+
     
     return (
         <form className="box-form" onSubmit={handleSubmit}
-        style={ {color: "white", backgroundColor:"rgb(0, 0, 128)", height: 300 , borderRadius: 10, 
+        style={ {color: "white", backgroundColor:"rgb(0, 0, 128)", height: 300, borderRadius: 10, 
         justifyContent: "center", alignItems: "center", textAlign: "center", padding: 20} }>
             <h3>Seja bem vindo!</h3>
             <h6>Coloque suas informações e faça seu cadastro</h6>
@@ -52,6 +65,7 @@ function FormUser({ onSubmit }){
                 value={form.senha} onChange={handleChange}/> <br /><br />
 
                 <button type="submit" style={{backgroundColor:"ghostwhite", color:"black", padding: 10, width: 150, height: 30, borderRadius: 15}}>Cadastre-se</button>
+
         </form>
     );
 }
