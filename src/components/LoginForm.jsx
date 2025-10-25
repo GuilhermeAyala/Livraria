@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-function FormUser({ onSubmit }){
+function LoginForm({ onSubmit }){
+    const navigate = useNavigate();
     const [form, setForm] = useState({nome:'', email:'', senha:''});
     const [erro, setErro] = useState('');
 
@@ -25,27 +26,30 @@ function FormUser({ onSubmit }){
 
     function handleSubmit(e){
         e.preventDefault();
+
         const message = ValidarForm(form)
         if(message){
-            setErro(message)
+            setErro(message);
+            return;
         }
+
+        if (form.email === "@admin"){
+            navigate("/admin")
+        }
+        else if(form.email === "@user"){
+            navigate("/user")
+        }
+        else{
+            alert("Digite @admin ou @user");
+            return;
+        }
+       
         setErro('');
         onSubmit?.(form);
-
-    if(form.email.endsWith('@admin')){
-        navigate('/admin');
-    }
-    else if(form.email.endsWith('@usuario')){
-        navigate('/usuario');
-    }
-    else{
-        alert('Email tem que ter @admin ou @usuario');
-    }
-
-    setForm({nome: '', email: '', senha:'' });
+        setForm({nome: '', email: '', senha:'' });
 }
+//separar via formulario, duas paginas, a do adm e do usuario comum, ver isso dps 
 
-    
     return (
         <form className="box-form" onSubmit={handleSubmit}
         style={ {color: "white", backgroundColor:"rgb(0, 0, 128)", height: 300, borderRadius: 10, 
@@ -57,7 +61,7 @@ function FormUser({ onSubmit }){
                 value={form.nome} onChange={handleChange}/> <br />
 
                 <label htmlFor="email">Email</label>
-                <input style={ {padding: 10, border: "solid", borderRadius: 10} } type="text" name="email" id="email"
+                <input style={ {padding: 10, border: "solid", borderRadius: 10} } type="text" placeholder="Digite @admin ou @user" name="email" id="email"
                 value={form.email} onChange={handleChange}/> <br />
 
                 <label htmlFor="senha">Senha</label>
@@ -70,4 +74,4 @@ function FormUser({ onSubmit }){
     );
 }
 
-export default FormUser;
+export default LoginForm;
