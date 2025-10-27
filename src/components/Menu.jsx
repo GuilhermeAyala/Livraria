@@ -6,11 +6,10 @@ const Menu = () => {
             <ul style={{display: 'flex', listStyle: 'none'}}>
                 <li>Lista de Livros</li>
                 <li>
-                    <button class="icon-carrinho">Carrinho</button>
+                    <button style={{backgroundColor: 'red'}}>Carrinho</button>
                 </li>
                 <li>Teste</li>
             </ul>
-            
         </div>
     );
 }
