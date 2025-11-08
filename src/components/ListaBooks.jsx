@@ -13,6 +13,7 @@ export default function ListaBooks({ handleAdicionarLivro }) {
             <h5>Preço: R${book.price.toFixed(2)}</h5>
             <button  onClick={() => {
               handleAdicionarLivro(book)} } style={{borderRadius: 10, padding: 8, backgroundColor: "grey"}}>Adicionar ao Carrinho</button>
+            <button style={{borderRadius: 10, padding: 8, backgroundColor: "yellow"}}>Favoritar</button>
           </li>
         ))}
       </ul>

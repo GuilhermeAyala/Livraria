@@ -1,4 +1,5 @@
 import React from 'react';
+import CarrinhoView from './Carrinho';
 
 const Menu = () => {
     return(
@@ -7,6 +8,9 @@ const Menu = () => {
                 <li>Lista de Livros</li>
                 <li>
                     <button style={{backgroundColor: 'red'}}>Carrinho</button>
+                </li>
+                <li>
+                    <button style={{backgroundColor: 'yellow'}}>Favoritos</button>
                 </li>
                 <li>Teste</li>
             </ul>
