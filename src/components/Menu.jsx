@@ -1,7 +1,13 @@
 import React from 'react';
-import CarrinhoView from './Carrinho';
+import { useNavigate } from "react-router-dom";
 
 const Menu = () => {
+    const navigate = useNavigate();
+
+    const EnterFavoritos = () => {
+        navigate('/user/Favoritos');
+    }
+
     return(
         <div>
             <ul style={{display: 'flex', listStyle: 'none'}}>
@@ -10,9 +16,8 @@ const Menu = () => {
                     <button style={{backgroundColor: 'red'}}>Carrinho</button>
                 </li>
                 <li>
-                    <button style={{backgroundColor: 'yellow'}}>Favoritos</button>
+                    <button style={{backgroundColor: 'yellow'}} onClick={EnterFavoritos}>Favoritos</button>
                 </li>
-                <li>Teste</li>
             </ul>
         </div>
     );
