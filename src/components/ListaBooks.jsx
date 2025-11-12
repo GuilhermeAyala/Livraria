@@ -1,7 +1,10 @@
 import React from "react";
 import { books } from "../data/books";
+import { useFavoritos } from "./FavoritosContext";
 
 export default function ListaBooks({ handleAdicionarLivro }) {
+  const { adicionarFavorito } = useFavoritos();
+
   return (
     <div>
       <h4>Livros Disponíveis:</h4>
@@ -11,9 +14,10 @@ export default function ListaBooks({ handleAdicionarLivro }) {
             <h4>Titulo: {book.name}</h4>  
             <h5>Autor: {book.autor}</h5>
             <h5>Preço: R${book.price.toFixed(2)}</h5>
-            <button  onClick={() => {
+            <button onClick={() => {
               handleAdicionarLivro(book)} } style={{borderRadius: 10, padding: 8, backgroundColor: "grey"}}>Adicionar ao Carrinho</button>
-            <button style={{borderRadius: 10, padding: 8, backgroundColor: "yellow"}}>Favoritar</button>
+            <button onClick={() => {
+              adicionarFavorito(book)}} style={{borderRadius: 10, padding: 8, backgroundColor: "yellow"}}>Favoritar</button>
           </li>
         ))}
       </ul>
