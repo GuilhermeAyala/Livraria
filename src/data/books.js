@@ -34,6 +34,7 @@ AdicionarLivros(
     new Books(3, "Hamlet", "William Shakespeare", 1623, 42.00, true, 1),
     new Books(4, "O Poderoso Chefão", "Mario Puzo", 196, 20.00, true, 1),
     new Books(5, "1984", "George Orwell", 1949, 45.00, true, 1),
+    new Books(6, "O Livro Vermelho", "Mao Tse-Tung", 1954, 23.00, true, 1)
 );
 
 export function ComprarLivro(total){//sem retorno no console, função auxiliar que retorna o valor total para uso em outras funções
