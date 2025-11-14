@@ -1,14 +1,30 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { Carrinho } from '../data/carrinho.js';
 import { books } from '../data/books.js';
 import ListaBooks from './ListaBooks.jsx';
 
+const STORAGE_KEY = 'carrinho'
+
 export default function CarrinhoView() {
   const carrinho = useMemo(() => new Carrinho([]), []);
   const livrosDisponiveis = books;
-  const [livrosNoCarrinho, setLivrosNoCarrinho] = useState([])
+  const [livrosNoCarrinho, setLivrosNoCarrinho] = useState(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  });
+
   const [, setTick] = useState(0); // só para forçar re-render quando mudamos quantidades/removemos
   const forceUpdate = () => setTick((v) => v + 1);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(livrosNoCarrinho))
+    } catch{}
+  }, [livrosNoCarrinho]);
 
   const handleAdicionarLivro = (book) => {
   setLivrosNoCarrinho((prev) => {
