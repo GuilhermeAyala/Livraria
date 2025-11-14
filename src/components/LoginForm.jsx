@@ -34,10 +34,10 @@ function LoginForm({ onSubmit }){
         }
 
         if (form.email === "@admin"){
-            navigate("/admin")
+            navigate("/admin", {state: {nome: form.nome}});
         }
         else if(form.email === "@user"){
-            navigate("/user")
+            navigate("/user", {state: {nome: form.nome}});
         }
         else{
             alert("Digite @admin ou @user");

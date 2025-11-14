@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { books } from "../data/books";
 import { useFavoritos } from "./FavoritosContext";
 
-export default function ListaBooks({ handleAdicionarLivro }) {
+export default function ListaBooks({books = [], handleAdicionarLivro }) {
   const { adicionarFavorito } = useFavoritos();
 
   const QUANTIDADE_POR_VEZ = 5;

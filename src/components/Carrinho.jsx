@@ -4,8 +4,9 @@ import { books } from '../data/books.js';
 import ListaBooks from './ListaBooks.jsx';
 
 export default function CarrinhoView() {
-  const carrinho = useMemo(() => new Carrinho(books), []);
-  const [livrosNoCarrinho, setLivrosNoCarrinho] = useState(carrinho.books)
+  const carrinho = useMemo(() => new Carrinho([]), []);
+  const livrosDisponiveis = books;
+  const [livrosNoCarrinho, setLivrosNoCarrinho] = useState([])
   const [, setTick] = useState(0); // só para forçar re-render quando mudamos quantidades/removemos
   const forceUpdate = () => setTick((v) => v + 1);
 
@@ -35,8 +36,9 @@ export default function CarrinhoView() {
     setLivrosNoCarrinho((prev) => prev.filter((b) => b.id !== id));
     };
 
+  carrinho.books = livrosNoCarrinho;
   const detalhes = useMemo(() => carrinho.detalheDaCompra(), [carrinho, /* re-render */]);
-  const subtotal = livrosNoCarrinho.reduce(
+  const subtotal = (livrosNoCarrinho || []).reduce(
     (acc, b) => acc + (Number(b.price) || 0) * (Number(b.quantidade) || 0),
     0
   );
@@ -56,17 +58,18 @@ export default function CarrinhoView() {
     }
   };
 
-  if (!carrinho.books || carrinho.books.length === 0) {
-    return <p>🛒 Seu carrinho está vazio.</p>;
-  }
-
   return (
     <div style={{ padding: 16 }}>
       
-      <ListaBooks handleAdicionarLivro={handleAdicionarLivro} />
+      <ListaBooks books={livrosDisponiveis} handleAdicionarLivro={handleAdicionarLivro} />
 
     <h1>🛍 Carrinho</h1>
-      <table border="1" cellPadding="8" style={{ width: '100%', borderCollapse: 'collapse' }}>
+
+    {livrosNoCarrinho.length === 0 ? (
+      <p>Carrinho Vazio</p>
+    ) : (
+     <>
+    <table border="1" cellPadding="8" style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr>
             <th>Título</th>
@@ -108,6 +111,8 @@ export default function CarrinhoView() {
       <div style={{ marginTop: 12}}>
         <button style={{width: 200, height: 50, backgroundColor: "red", borderRadius: 10, color:"white"}} onClick={finalizar}>Finalizar compra</button>
       </div>
+        </>
+      )}
     </div>
   )
 
