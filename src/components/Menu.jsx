@@ -16,6 +16,14 @@ const Menu = ({nome = ''}) => {
         <div>
             <ul style={{display: 'flex', listStyle: 'none'}}>
                 <li>Lista de Livros</li>
+
+                <select style={{backgroundColor: 'grey'}}>Categorias
+                <option>Ficção</option>
+                <option>Romance</option>
+                <option>Filosofia</option>
+                <option>História</option>
+                </select>
+
                 <li>
                     <button style={{backgroundColor: 'red'}}>Carrinho</button>
                 </li>
