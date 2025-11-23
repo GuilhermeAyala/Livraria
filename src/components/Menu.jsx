@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
+import BarraDePesquisa from './BarraDePesquisa';
 
 const Menu = ({nome = ''}) => {
     const navigate = useNavigate();
@@ -14,15 +15,17 @@ const Menu = ({nome = ''}) => {
 
     return(
         <div>
-            <ul style={{display: 'flex', listStyle: 'none'}}>
+            <ul style={{display: 'flex', listStyle: 'none', gap: 8}}>
                 <li>Lista de Livros</li>
 
-                <select style={{backgroundColor: 'grey'}}>Categorias
+                <select style={{backgroundColor: 'grey', padding: 4, borderRadius: 6}}>Categorias
                 <option>Ficção</option>
                 <option>Romance</option>
                 <option>Filosofia</option>
                 <option>História</option>
                 </select>
+
+                <li><BarraDePesquisa/> </li>
 
                 <li>
                     <button style={{backgroundColor: 'red'}}>Carrinho</button>
