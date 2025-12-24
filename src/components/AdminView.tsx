@@ -41,11 +41,11 @@ function AdminInterface(){
     const DecrementQtd = () => {
         setCount(count - 1);
         setQuantidade(quantidade - 1);
+        if(count && quantidade < 0){
+          setCount(0);
+        }
     }
-    if(count && quantidade < 0){
-        return count;
-    }
-
+   
     const AddLivroAoSistema = async() => {
         if(jsonDados){
             try{

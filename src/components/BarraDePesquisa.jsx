@@ -12,6 +12,7 @@ const BarraDePesquisa = () => {
     return(
         <div>
             <input type="text" placeholder="Qual livro você procura?" value={texto} onChange={(e) => setTexto(e.target.value)} />
+            <button>Buscar</button>
             
             {query && livrosFiltrados.length > 0 && (
                 <ul>

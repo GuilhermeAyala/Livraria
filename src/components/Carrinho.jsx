@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Carrinho } from '../data/carrinho.js';
 import { books } from '../data/books.js';
 import ListaBooks from './ListaBooks.jsx';
@@ -6,6 +7,7 @@ import ListaBooks from './ListaBooks.jsx';
 const STORAGE_KEY = 'carrinho'
 
 export default function CarrinhoView() {
+  const navigate = useNavigate();
   const carrinho = useMemo(() => new Carrinho([]), []);
   const livrosDisponiveis = books;
   const [livrosNoCarrinho, setLivrosNoCarrinho] = useState(() => {
@@ -25,6 +27,10 @@ export default function CarrinhoView() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(livrosNoCarrinho))
     } catch{}
   }, [livrosNoCarrinho]);
+
+  const IrParaPagamento = () => {
+    navigate('/user/Pagamento')
+  }
 
   const handleAdicionarLivro = (book) => {
   setLivrosNoCarrinho((prev) => {
@@ -126,6 +132,7 @@ export default function CarrinhoView() {
 
       <div style={{ marginTop: 12}}>
         <button style={{width: 200, height: 50, backgroundColor: "red", borderRadius: 10, color:"white"}} onClick={finalizar}>Finalizar compra</button>
+        <button style={{width: 200, height: 50, backgroundColor: "orange", borderRadius: 10, color:"white"}} onClick={IrParaPagamento}>Teste Tela Pagamento</button>
       </div>
         </>
       )}

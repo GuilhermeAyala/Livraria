@@ -6,6 +6,7 @@ import AdminPage from './pages/AdminPage';
 import UserPage from './pages/UserPage';
 import Favoritos from './components/Favoritos';
 import Profile from './components/Profile';
+import Pagamento from './components/Pagamento';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path='/user' element={<UserPage />} />
         <Route path='/user/Favoritos' element={<Favoritos />} />
         <Route path='/user/Profile' element={<Profile />} />
+        <Route path='/user/Pagamento' element={<Pagamento />}/>
       </Routes>
     </FavoritosProvider>
     </BrowserRouter>
