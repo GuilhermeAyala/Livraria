@@ -3,30 +3,38 @@ import { useLocation } from "react-router-dom";
 
 const Pagamento = () => {
     const location = useLocation();
-    let chavePix = 0;
-    let subtotal = location.state?.subtotal || 0;
-    let [metodoPagamento, setMetodoPagamento] = useState();
+    let subtotalInicial = location.state?.subtotal || 0;
+    let [valorFinal, setValorFinal] = useState(subtotalInicial);
+    let [chavePix, setChavePix] = useState("");
+    let [metodoPagamento, setMetodoPagamento] = useState("");
 
-    const GerarChavePix = () => {
-        let chavePix;
-        let nums = [0,1,2,3,4,5,6,7,8,9];
-        let chars = ['abcdefghijklmnopqrstuvwxyz'];
-        chavePix = Math.random(nums);
+    const GerarChavePix = (tamanho = 15) => {
+        const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+        let chavePix = "";
+        for(let i = 0; i < tamanho; i++){
+                const indice = Math.floor(Math.random() * chars.length);
+                chavePix += chars[indice];
+            }
         return chavePix;
         
-    }
+    };
 
     const handlePagamento = (e) => {
-        setMetodoPagamento(e.target.id);
-    }
+        const metodo = e.target.id;
+        setMetodoPagamento(metodo);
 
-    if(metodoPagamento === "Credito"){
-        subtotal = subtotal - (subtotal * 0.20);
-        return subtotal;
-    }
-    else if(metodoPagamento === "Pix"){
-        return subtotal;
-    }
+        if(metodo === "Credito"){
+            setValorFinal(subtotalInicial * 0.8);   
+        }
+        else if(metodo === "Dinheiro"){
+            setValorFinal(subtotalInicial);
+        }
+        else if(metodo === "Pix"){
+            setValorFinal(subtotalInicial);
+            setChavePix(GerarChavePix());
+        }
+    
+    };
 
     return(
         <div>
@@ -41,10 +49,11 @@ const Pagamento = () => {
                 </label>
                 <label htmlFor="">
                     <input type="radio" name="metodo" id="Pix" onChange={handlePagamento}/>
+                    Pix
                 </label>
-
-                <h5>Valor: {subtotal.toFixed(2)}</h5>
             </form>
+
+            <h5>Valor: {valorFinal.toFixed(2)}</h5>
 
             {GerarChavePix ? (
                 <h4>Sua chave é: {chavePix}</h4>
@@ -53,7 +62,7 @@ const Pagamento = () => {
             )}
             
         </div>
-    )
+    );
 }
 
 export default Pagamento;
