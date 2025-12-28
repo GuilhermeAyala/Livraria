@@ -28,10 +28,6 @@ export default function CarrinhoView() {
     } catch{}
   }, [livrosNoCarrinho]);
 
-  const IrParaPagamento = () => {
-    navigate('/user/Pagamento')
-  }
-
   const handleAdicionarLivro = (book) => {
   setLivrosNoCarrinho((prev) => {
     const existe = prev.find((b) => b.id === book.id);
@@ -60,7 +56,7 @@ export default function CarrinhoView() {
 
   carrinho.books = livrosNoCarrinho;
   const detalhes = useMemo(() => carrinho.detalheDaCompra(), [carrinho, /* re-render */]);
-  const subtotal = (livrosNoCarrinho || []).reduce(
+  let subtotal = (livrosNoCarrinho || []).reduce(
     (acc, b) => acc + (Number(b.price) || 0) * (Number(b.quantidade) || 0),
     0
   );
@@ -132,7 +128,7 @@ export default function CarrinhoView() {
 
       <div style={{ marginTop: 12}}>
         <button style={{width: 200, height: 50, backgroundColor: "red", borderRadius: 10, color:"white"}} onClick={finalizar}>Finalizar compra</button>
-        <button style={{width: 200, height: 50, backgroundColor: "orange", borderRadius: 10, color:"white"}} onClick={IrParaPagamento}>Teste Tela Pagamento</button>
+        <button style={{width: 200, height: 50, backgroundColor: "orange", borderRadius: 10, color:"white"}} onClick={() => navigate('/user/Pagamento', {state: {subtotal}})}>Teste Tela Pagamento</button>
       </div>
         </>
       )}

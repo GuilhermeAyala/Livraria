@@ -1,46 +1,56 @@
-import React from "react";
-import { ComprarLivro } from "../data/books";
-//continuar depois
+import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const Pagamento = () => {
-    let metodoPagamento;
-    let total = ComprarLivro(total); 
+    const location = useLocation();
+    let chavePix = 0;
+    let subtotal = location.state?.subtotal || 0;
+    let [metodoPagamento, setMetodoPagamento] = useState();
 
-    GerarChavePix = () => {
-        let chavePix = 0;
-        min = Math.ceil(min);
-        max = Math.floor(max);
-        chavePix = Math.random();
-            if(chavePix < 0){
-                return false;
-            }
-            else if(chavePix > 10000){
-                return false
-            }
+    const GerarChavePix = () => {
+        let chavePix;
+        let nums = [0,1,2,3,4,5,6,7,8,9];
+        let chars = ['abcdefghijklmnopqrstuvwxyz'];
+        chavePix = Math.random(nums);
+        return chavePix;
+        
+    }
+
+    const handlePagamento = (e) => {
+        setMetodoPagamento(e.target.id);
     }
 
     if(metodoPagamento === "Credito"){
-        total = total * (total - 0.20);
+        subtotal = subtotal - (subtotal * 0.20);
+        return subtotal;
     }
     else if(metodoPagamento === "Pix"){
-
+        return subtotal;
     }
 
     return(
         <div>
             <form>
                 <label htmlFor="">
-                    <input type="radio" name="CartãoDeCredito" id="Credito" />
+                    <input type="radio" name="metodo" id="Credito" onChange={handlePagamento}/>
                     Credito
                 </label>
                 <label htmlFor="">
-                    <input type="radio" name="Dinheiro" id="Dinheiro" />
+                    <input type="radio" name="metodo" id="Dinheiro" onChange={handlePagamento}/>
                     Dinheiro
                 </label>
                 <label htmlFor="">
-                    <input type="radio" name="Pix" id="Pix" />
+                    <input type="radio" name="metodo" id="Pix" onChange={handlePagamento}/>
                 </label>
+
+                <h5>Valor: {subtotal.toFixed(2)}</h5>
             </form>
+
+            {GerarChavePix ? (
+                <h4>Sua chave é: {chavePix}</h4>
+            ) : (
+                <h4>Chave Pix não gerada, tente outro metodo de pagamento</h4>
+            )}
             
         </div>
     )
