@@ -28,9 +28,6 @@ const Menu = ({nome = ''}) => {
                 <li><BarraDePesquisa/> </li>
 
                 <li>
-                    <button style={{backgroundColor: 'red'}}>Carrinho</button>
-                </li>
-                <li>
                     <button style={{backgroundColor: 'yellow'}} onClick={EnterFavoritos}>Favoritos</button>
                 </li>
                 <li>

@@ -52,9 +52,9 @@ const Pagamento = () => {
                     Pix
                 </label>
             </form>
-
+            
             <h5>Valor: {valorFinal.toFixed(2)}</h5>
-
+            
             {GerarChavePix ? (
                 <h4>Sua chave é: {chavePix}</h4>
             ) : (

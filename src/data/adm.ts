@@ -11,21 +11,6 @@ export class Admin {
     }
 }
 
-class Funcionarios {
-    name;
-    salario; 
-    cargo;
-    idade;
-    totalDeVendas;
-    constructor(name: string, salario: number, cargo: string, idade: number, totalDeVendas: number){
-        this.name = name;
-        this.salario = salario;
-        this.cargo = cargo;
-        this.idade = idade;
-        this.totalDeVendas = totalDeVendas;
-    }
-}
-
 class Livro {
     name: string;
     price: number;
@@ -43,27 +28,6 @@ class Livro {
 //classe de usuarios para conectar com async -> prisma/BD mais requisição futura
 
 const Admin1 = new Admin(0, "Peter", "peter@gmail.com", 12345)
-
-let Funcionario1 = new Funcionarios("Lucas", 1200, "Vendedor", 25, 1500)
-
-export async function adicionarFuncionario(funcionario: Funcionarios): Promise<void>{
-    try {
-        const resposta = await fetch('http://localhost:3000/api/funcionarios', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(funcionario),
-        });
-
-        if(!resposta.ok){
-            throw new Error("Erro ao adicionar funcionário");
-        }
-        console.log('Funcionario adicionado com sucesso');
-    } catch (error) {
-        console.log('Erro:', error)
-    }
-}
 
 export async function AdicionarLivros(livro: Livro): Promise<void> {
   try {

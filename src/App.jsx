@@ -8,7 +8,6 @@ import Favoritos from './components/Favoritos';
 import Profile from './components/Profile';
 import Pagamento from './components/Pagamento';
 
-
 function App() {
   return(
     <BrowserRouter>
