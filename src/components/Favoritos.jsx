@@ -1,5 +1,5 @@
 import React from "react";
-import { useFavoritos } from "./FavoritosContext";
+import { useFavoritos } from "../contexts/FavoritosContext";
 
 const Favoritos = ({books = [], handleAdicionarLivro }) => {
   const { favoritos, removerFavorito } = useFavoritos();

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { books } from "../data/books";
-import { useFavoritos } from "./FavoritosContext";
+import { useFavoritos } from "../contexts/FavoritosContext";
 
 const BarraDePesquisa = ({ handleAdicionarLivro }) => {
     const [texto, setTexto] = useState("");
@@ -19,10 +19,6 @@ const BarraDePesquisa = ({ handleAdicionarLivro }) => {
 
         setResultados(livrosFiltrados);
     }
-
-    //const livrosFiltrados =  query ? books.filter((book) => 
-    //    (book.name ?? "").toLowerCase().includes(query)) 
-    //: [];
 
     return(
         <div>

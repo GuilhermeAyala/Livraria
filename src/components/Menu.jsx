@@ -5,6 +5,10 @@ import BarraDePesquisa from './BarraDePesquisa';
 const Menu = ({nome = ''}) => {
     const navigate = useNavigate();
 
+    const EnterCarrinho = () => {
+        navigate('/user/Carrinho');
+    }
+
     const EnterFavoritos = () => {
         navigate('/user/Favoritos');
     }
@@ -16,7 +20,6 @@ const Menu = ({nome = ''}) => {
     return(
         <div>
             <ul style={{display: 'flex', listStyle: 'none', gap: 8}}>
-                <li>Lista de Livros</li>
 
                 <select style={{backgroundColor: 'grey', padding: 4, borderRadius: 6}}>Categorias
                 <option>Ficção</option>
@@ -26,6 +29,10 @@ const Menu = ({nome = ''}) => {
                 </select>
 
                 <li><BarraDePesquisa/> </li>
+
+                <li>
+                    <button style={{backgroundColor: 'red'}} onClick={EnterCarrinho}>Carrinho</button>
+                </li>
 
                 <li>
                     <button style={{backgroundColor: 'yellow'}} onClick={EnterFavoritos}>Favoritos</button>

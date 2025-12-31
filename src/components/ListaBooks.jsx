@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { books } from "../data/books";
-import { useFavoritos } from "./FavoritosContext";
+import { useFavoritos } from "../contexts/FavoritosContext";
 
 export default function ListaBooks({books = [], handleAdicionarLivro }) {
   const { adicionarFavorito } = useFavoritos();
