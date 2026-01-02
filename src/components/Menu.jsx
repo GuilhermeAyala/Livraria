@@ -21,13 +21,6 @@ const Menu = ({nome = ''}) => {
         <div>
             <ul style={{display: 'flex', listStyle: 'none', gap: 8}}>
 
-                <select style={{backgroundColor: 'grey', padding: 4, borderRadius: 6}}>Categorias
-                <option>Ficção</option>
-                <option>Romance</option>
-                <option>Filosofia</option>
-                <option>História</option>
-                </select>
-
                 <li><BarraDePesquisa/> </li>
 
                 <li>

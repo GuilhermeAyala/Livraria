@@ -61,7 +61,7 @@ function AdminInterface(){
     return(//pd virar json pro BD, além da parte react 
         <div>
             <h3>Gerenciar Livros</h3>
-            <h3>Gerencimaneto de Estoque</h3>
+            <h3>Gerenciamento de Estoque</h3>
             <div style={{ backgroundColor: "#1a1a1a", width: 500, height: 400, padding: 12, borderRadius: 12 }}>
         <form onSubmit={handleSubmit}>
           <label>Titulo</label>

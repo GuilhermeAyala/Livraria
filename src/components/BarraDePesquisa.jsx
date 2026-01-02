@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { books } from "../data/books";
 import { useFavoritos } from "../contexts/FavoritosContext";
+import { useCarrinho } from "../contexts/CarrinhoContext";
 
-const BarraDePesquisa = ({ handleAdicionarLivro }) => {
+const BarraDePesquisa = () => {
     const [texto, setTexto] = useState("");
     const [resultados, setResultados] = useState([]);
     const { adicionarFavorito } = useFavoritos();
+    const { adicionarAoCarrinho } = useCarrinho();
 
     const buscarLivros = () => {
         const query = texto.trim().toLowerCase();
@@ -22,8 +24,9 @@ const BarraDePesquisa = ({ handleAdicionarLivro }) => {
 
     return(
         <div>
-            <input type="text" placeholder="Qual livro você procura?" value={texto} onChange={(e) => setTexto(e.target.value)} />
-            <button onClick={buscarLivros}>Buscar</button>
+            <input type="text" placeholder="Qual livro você procura?" value={texto} onChange={(e) => setTexto(e.target.value)} 
+            style={{padding: 5, borderRadius: 5, border: "1px solid black"}}/>
+            <button onClick={buscarLivros} style={{padding: 5, backgroundColor: "whitesmoke"}}>Buscar</button>
             
             {resultados.length > 0 ? (
                 <ul style={{display: "flex", listStyle: "none", padding: 0, marginTop: 12}}>
@@ -41,7 +44,7 @@ const BarraDePesquisa = ({ handleAdicionarLivro }) => {
                         <h5>Autor: {book.autor}</h5>
                         <h5>Preço: R${book.price.toFixed(2)}</h5>
 
-                        <button onClick={() => handleAdicionarLivro(book)}
+                        <button onClick={() => adicionarAoCarrinho(book)}
                          style={{ borderRadius: 10, padding: 8, backgroundColor: "grey", marginRight: 6 }}
                         >
                         Adicionar ao Carrinho
