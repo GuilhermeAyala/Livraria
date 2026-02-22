@@ -11,9 +11,10 @@ Aplicação para se comportar como livraria, adição de livros, dettahles da co
 Classes:
 -Books
 -Users
+-Pagamento
 -Carrinho
--Funcionario
 
-Montar arquitetura, ux/ui e etc
+Arquitetura: Microsserviços
+Tecnologias: Typescript, ReactJS
 
 npx prisma db pull para atualizar o banco de dados e npx prisma studio para ver seu localhost 
