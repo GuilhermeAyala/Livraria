@@ -16,12 +16,13 @@ export class Pagamento {
 export class Cartao_Credito extends Pagamento {
     nomeTitular: string;
     numeroCartao: string;
-    validade: string;
+    validade = new Date();
     marca: string;
     cvc: number;
     saldo: number;
+    limite: number;
 
-    constructor(id: number, metodoPagamento: string, nomeTitular: string, numeroCartao: string, validade: string, marca: string, cvc: number, saldo: number){
+    constructor(id: number, metodoPagamento: string, nomeTitular: string, numeroCartao: string, validade: Date, marca: string, cvc: number, saldo: number, limite: number){
         super(id, metodoPagamento); 
         this.nomeTitular = nomeTitular;
         this.numeroCartao = numeroCartao;
@@ -29,6 +30,7 @@ export class Cartao_Credito extends Pagamento {
         this.marca = marca;
         this.cvc = cvc;
         this.saldo = saldo;
+        this.limite = limite;
     }
     
 }
@@ -42,14 +44,37 @@ export class Pix extends Pagamento {
     }
 }
 
-const ValidarCartão = (nomeTitular: string, numeroCartao: string, validade: string, marca: string, cvc: number, saldo: number) => {
-    if(!nomeTitular || !numeroCartao || !validade || !marca || !cvc || !saldo){
+const ValidarCartão = (nomeTitular: string, numeroCartao: string, validade: Date, marca: string, cvc: string, saldo: number, limite:number) => {
+    const onlyLetters = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
+
+    if(!nomeTitular || !numeroCartao || !validade || !marca || !cvc || !saldo || !limite){
         console.log("os dados devem existir")
+    }   
+    if(!onlyLetters.test(nomeTitular)) {
+    console.log("Nome deve conter apenas letras");
+    return false;
     }
     if(numeroCartao.length < 0 || numeroCartao.length > 12){
         return false;
     }
+    if(cvc.length !== 3){
+        return false;
+    }
+    saldo <= 0 ? false : console.log("Cartão com saldo");
     //continuar validações do cartão
+
+}
+
+const AdicionarCartão = (nomeTitular: string, numeroCartao: string, validade: Date, marca: string, cvc: string, saldo: number, limite:number) => {
+    let add = ValidarCartão(nomeTitular, numeroCartao, validade, marca, cvc, saldo, limite);
+    
+   
+}
+
+const GerarChavePix = () => {
+    let numerosPix = '1234567890';
+    let letrasPix = 'abcdefghijklmnopqrstuv';
+
 
 }
 
