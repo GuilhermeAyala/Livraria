@@ -4,12 +4,9 @@
 
 export class Pagamento {
     id: number;
-    metodoPagamento: string;
 
-    constructor(id: number, metodoPagamento: string){
+    constructor(id: number){
         this.id = id;
-        this.metodoPagamento = metodoPagamento;
-
     }
 }
 
@@ -18,12 +15,12 @@ export class Cartao_Credito extends Pagamento {
     numeroCartao: string;
     validade = new Date();
     marca: string;
-    cvc: number;
+    cvc: string;
     saldo: number;
     limite: number;
 
-    constructor(id: number, metodoPagamento: string, nomeTitular: string, numeroCartao: string, validade: Date, marca: string, cvc: number, saldo: number, limite: number){
-        super(id, metodoPagamento); 
+    constructor(id: number, nomeTitular: string, numeroCartao: string, validade: Date, marca: string, cvc: string, saldo: number, limite: number){
+        super(id); 
         this.nomeTitular = nomeTitular;
         this.numeroCartao = numeroCartao;
         this.validade = validade;
@@ -38,44 +35,67 @@ export class Cartao_Credito extends Pagamento {
 export class Pix extends Pagamento {
     chavePix: string;
 
-    constructor(id: number, metodo: string, chavePix: string){
-        super(id, metodo)
+    constructor(id: number, chavePix: string){
+        super(id)
         this.chavePix = chavePix;
     }
 }
 
-const ValidarCartão = (nomeTitular: string, numeroCartao: string, validade: Date, marca: string, cvc: string, saldo: number, limite:number) => {
-    const onlyLetters = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
+const AdicionarCartão = (id: number, nomeTitular: string, numeroCartao: string, validade: Date, marca: string, cvc: string, saldo: number, limite:number) => {
+    const ValidarCartão = (nomeTitular: string, numeroCartao: string, validade: Date, marca: string, cvc: string, saldo: number, limite:number) => {
+        const onlyLetters = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
 
-    if(!nomeTitular || !numeroCartao || !validade || !marca || !cvc || !saldo || !limite){
-        console.log("os dados devem existir")
-    }   
-    if(!onlyLetters.test(nomeTitular)) {
-    console.log("Nome deve conter apenas letras");
-    return false;
+        if(!nomeTitular || !numeroCartao || !validade || !marca || !cvc || !saldo || !limite){
+            throw new Error("os dados devem existir");
+        }   
+        if(!onlyLetters.test(nomeTitular)) {
+            throw new Error("Nome deve conter apenas letras");
+        }
+        if(numeroCartao.length !== 16){
+            throw new Error("O cartão deve conter 16 numeros")
+        }
+        if(validade < new Date()){
+            throw new Error("Cartão vencido")
+        }
+        if(cvc.length !== 3){
+            throw new Error("Cvc deve ser igual a 3");
+        }
+        if(saldo === undefined || saldo === null || saldo <= 0){
+            throw new Error("Saldo não pode ser negativo")
+        }
+        if(limite < 0){
+            throw new Error("O limite deve ser maior que zero")
+        }
+
     }
-    if(numeroCartao.length < 0 || numeroCartao.length > 12){
-        return false;
+
+    ValidarCartão(nomeTitular, numeroCartao, validade, marca, cvc, saldo, limite)
+
+    return {
+        id, 
+        nomeTitular, 
+        numeroCartao, 
+        validade, 
+        marca, 
+        cvc, 
+        saldo, 
+        limite
     }
-    if(cvc.length !== 3){
-        return false;
-    }
-    saldo <= 0 ? false : console.log("Cartão com saldo");
-    //continuar validações do cartão
 
 }
 
-const AdicionarCartão = (nomeTitular: string, numeroCartao: string, validade: Date, marca: string, cvc: string, saldo: number, limite:number) => {
-    let add = ValidarCartão(nomeTitular, numeroCartao, validade, marca, cvc, saldo, limite);
-    
-   
-}
+const GerarChavePix = (chavePix: string) => {
+    let tamanho: number;
+    let numerosPix: string  = '1234567890';
+    let letrasPix: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv';
+    chavePix = numerosPix + letrasPix;
+    //for(let i: any; i < tamanho; i++){
+    //    const indice = Math.floor(Math.random() * chavePix)
 
-const GerarChavePix = () => {
-    let numerosPix = '1234567890';
-    let letrasPix = 'abcdefghijklmnopqrstuv';
+    //}
 
-
+    //return chavePix; 
+    //continuar depois
 }
 
 //export function FazerPagamento(desconto: number, dinheiroDisponivel: number, pagamento, metodoPagamento: string, total){
@@ -97,3 +117,5 @@ const GerarChavePix = () => {
     //    metodoPagamento, 
     //    total, 
     //};
+
+//checks: Função AdicionarCartão e ValidarCartão estão funcionando
