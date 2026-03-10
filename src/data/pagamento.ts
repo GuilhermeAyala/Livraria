@@ -1,6 +1,7 @@
 //pix, boleto, crédito, débito..., por hora
 //definir caracteristicas e metodos de pagamento num geral
 //depois cria classes únicas e suas especificações, pix com chave aleatória, cartão com cvc e etc
+import crypto from 'crypto';
 
 export class Pagamento {
     id: number;
@@ -84,19 +85,32 @@ const AdicionarCartão = (id: number, nomeTitular: string, numeroCartao: string,
 
 }
 
-const GerarChavePix = (chavePix: string) => {
-    let tamanho: number;
-    let numerosPix: string  = '1234567890';
-    let letrasPix: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv';
-    chavePix = numerosPix + letrasPix;
-    //for(let i: any; i < tamanho; i++){
-    //    const indice = Math.floor(Math.random() * chavePix)
+function gerarChavePix(
+    letras: string,
+    numeros: string,
+    tamanho: number = 32
+): string {
 
-    //}
+    const base: string = (letras + numeros).slice(0, tamanho);
 
-    //return chavePix; 
-    //continuar depois
+    const caracteres: string[] = base.split("");
+
+    for (let i = caracteres.length - 1; i > 0; i--) {
+
+        const randomIndex: number = crypto.randomInt(0, i + 1);
+
+        const temp: string = caracteres[i];
+        caracteres[i] = caracteres[randomIndex];
+        caracteres[randomIndex] = temp;
+    }
+
+    return caracteres.join("");
 }
+
+const letras: string = "abcdefghijklmnopqrstuvwxyz";
+const numeros: string = "0123456789";
+
+const chavePix: string = gerarChavePix(letras, numeros);
 
 //export function FazerPagamento(desconto: number, dinheiroDisponivel: number, pagamento, metodoPagamento: string, total){
     //total = ComprarLivro(total);

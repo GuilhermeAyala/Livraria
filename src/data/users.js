@@ -1,3 +1,7 @@
+//add usuario, validar usuario(detalhe, vai ter os dois, mas acho que é melhor separar direito, não colocar um dentro do outro)
+//criar usuario
+//
+
 class User {
     constructor(id, name, email, password, CPF, CEP){
         this.id = id;
@@ -13,6 +17,8 @@ class User {
 let Usuario1 = new User(0, "Pedro", "pedro@gmail.com", 242424, 54321, 0);
 
 let Users = [Usuario1];
+
+const createUser = () => {};
 
 function AddUser(...novosUsers){
     novosUsers.forEach((user) => {
