@@ -1,8 +1,6 @@
 //pix, boleto, crédito, débito..., por hora
 //definir caracteristicas e metodos de pagamento num geral
-//depois cria classes únicas e suas especificações, pix com chave aleatória, cartão com cvc e etc
-import crypto from 'crypto';
-
+//depois cria classes únicas e suas especificações, cartão com cvc e etc
 export class Pagamento {
     id: number;
 
@@ -33,13 +31,24 @@ export class Cartao_Credito extends Pagamento {
     
 }
 
-export class Pix extends Pagamento {
-    chavePix: string;
-
-    constructor(id: number, chavePix: string){
-        super(id)
-        this.chavePix = chavePix;
+export class Boleto extends Pagamento {
+    tempoValidade: number;
+    vencimento: number;
+    codigoBarras: string;
+    statusBoleto: object = {
+        pendente : "pendente",
+        ativo: "ativo",
+        vencido: "vencido",
     }
+    constructor(id:number, tempoValidade: number, vencimento: number, codigoBarras: string, statusBoleto: object){
+        super(id);
+        this.tempoValidade = tempoValidade;
+        this.vencimento = vencimento;
+        this.codigoBarras = codigoBarras;
+        this.statusBoleto = statusBoleto;
+    }
+    
+
 }
 
 const AdicionarCartão = (id: number, nomeTitular: string, numeroCartao: string, validade: Date, marca: string, cvc: string, saldo: number, limite:number) => {
@@ -85,32 +94,19 @@ const AdicionarCartão = (id: number, nomeTitular: string, numeroCartao: string,
 
 }
 
-function gerarChavePix(
-    letras: string,
-    numeros: string,
-    tamanho: number = 32
-): string {
+const GerarBoleto = (tempoValidade: number, vencimento: number, codigoBarras: string, statusBoleto: object) => {
+    const ValidarBoleto = (tempoValidade: number, vencimento: number, codigoBarras: string, statusBoleto: object) => {
+        let values = Object.keys(statusBoleto);
 
-    const base: string = (letras + numeros).slice(0, tamanho);
-
-    const caracteres: string[] = base.split("");
-
-    for (let i = caracteres.length - 1; i > 0; i--) {
-
-        const randomIndex: number = crypto.randomInt(0, i + 1);
-
-        const temp: string = caracteres[i];
-        caracteres[i] = caracteres[randomIndex];
-        caracteres[randomIndex] = temp;
+        if(tempoValidade < vencimento){
+            setTimeout(() => {
+                console.log("esperando pagamento");
+                values = Object.keys("pendente");
+        }, 24 * 60 * 60 * 1000)
+        }
     }
-
-    return caracteres.join("");
+    return Boleto;
 }
-
-const letras: string = "abcdefghijklmnopqrstuvwxyz";
-const numeros: string = "0123456789";
-
-const chavePix: string = gerarChavePix(letras, numeros);
 
 //export function FazerPagamento(desconto: number, dinheiroDisponivel: number, pagamento, metodoPagamento: string, total){
     //total = ComprarLivro(total);
