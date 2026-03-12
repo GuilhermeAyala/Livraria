@@ -39,6 +39,7 @@ export class Boleto extends Pagamento {
         pendente : "pendente",
         ativo: "ativo",
         vencido: "vencido",
+        pago: "pago"
     }
     constructor(id:number, tempoValidade: number, vencimento: number, codigoBarras: string, statusBoleto: object){
         super(id);
@@ -102,7 +103,10 @@ const GerarBoleto = (tempoValidade: number, vencimento: number, codigoBarras: st
             setTimeout(() => {
                 console.log("esperando pagamento");
                 values = Object.keys("pendente");
-        }, 24 * 60 * 60 * 1000)
+            }, 24 * 60 * 60 * 1000)//depois de 24 hrs
+        }
+        else if(tempoValidade > vencimento){
+            values = Object.keys("vencido");
         }
     }
     return Boleto;
