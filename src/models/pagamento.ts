@@ -1,6 +1,24 @@
-//pix, boleto, crédito, débito..., por hora
-//definir caracteristicas e metodos de pagamento num geral
-//depois cria classes únicas e suas especificações, cartão com cvc e etc
+export type MetodoPagamento = "Credito" | "Dinheiro" | "Pix" | "Boleto" | "";
+
+export const DESCONTOS: Record<string, number> = {
+    Credito: 0.2, 
+    Dinheiro: 0,
+    Pix: 0,
+    Boleto: 0,
+};
+
+export function aplicarDesconto(subtotal: number, metodo: MetodoPagamento): number {
+  const desconto = DESCONTOS[metodo] ?? 0;
+  return subtotal * (1 - desconto);
+}
+
+export function gerarCodigoBarras(tamanho = 48): string {
+  const digits = "0123456789";
+  return Array.from({ length: tamanho })
+    .map(() => digits[Math.floor(Math.random() * digits.length)])
+    .join("");
+}
+
 export class Pagamento {
     id: number;
 
@@ -52,8 +70,7 @@ export class Boleto extends Pagamento {
 
 }
 
-const AdicionarCartão = (id: number, nomeTitular: string, numeroCartao: string, validade: Date, marca: string, cvc: string, saldo: number, limite:number) => {
-    const ValidarCartão = (nomeTitular: string, numeroCartao: string, validade: Date, marca: string, cvc: string, saldo: number, limite:number) => {
+export const AdicionarCartão = (id: number, nomeTitular: string, numeroCartao: string, validade: Date, marca: string, cvc: string, saldo: number, limite:number) => {
         const onlyLetters = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
 
         if(!nomeTitular || !numeroCartao || !validade || !marca || !cvc || !saldo || !limite){
@@ -78,24 +95,21 @@ const AdicionarCartão = (id: number, nomeTitular: string, numeroCartao: string,
             throw new Error("O limite deve ser maior que zero")
         }
 
+            return new Cartao_Credito (
+            id, 
+            nomeTitular, 
+            numeroCartao, 
+            validade, 
+            marca, 
+            cvc, 
+            saldo, 
+            limite
+        )
+
     }
 
-    ValidarCartão(nomeTitular, numeroCartao, validade, marca, cvc, saldo, limite)
 
-    return {
-        id, 
-        nomeTitular, 
-        numeroCartao, 
-        validade, 
-        marca, 
-        cvc, 
-        saldo, 
-        limite
-    }
-
-}
-
-const GerarBoleto = (tempoValidade: number, vencimento: number, codigoBarras: string, statusBoleto: object) => {
+export const gerarBoleto = (id: number, tempoValidade: number, vencimento: number, codigoBarras: string, statusBoleto: object) => {
     const ValidarBoleto = (tempoValidade: number, vencimento: number, codigoBarras: string, statusBoleto: object) => {
         let values = Object.keys(statusBoleto);
 
@@ -108,8 +122,11 @@ const GerarBoleto = (tempoValidade: number, vencimento: number, codigoBarras: st
         else if(tempoValidade > vencimento){
             values = Object.keys("vencido");
         }
+        else{
+            values = Object.keys("pago");
+        }
     }
-    return Boleto;
+    return new Boleto(id, tempoValidade, vencimento, codigoBarras, statusBoleto);
 }
 
 //export function FazerPagamento(desconto: number, dinheiroDisponivel: number, pagamento, metodoPagamento: string, total){

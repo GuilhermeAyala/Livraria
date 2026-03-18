@@ -1,7 +1,7 @@
 import React from "react";
 import { useFavoritos } from "../contexts/FavoritosContext";
 
-const Favoritos = ({books = [], handleAdicionarLivro }) => {
+const Favoritos = () => {
   const { favoritos, removerFavorito } = useFavoritos();
 
   return (
@@ -11,7 +11,7 @@ const Favoritos = ({books = [], handleAdicionarLivro }) => {
         <p>Você ainda não adicionou favoritos.</p>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 12 }}>
-          {favoritos.map((book) => (
+          {favoritos.map((book: any) => (
             <div
               key={book.id}
               style={{

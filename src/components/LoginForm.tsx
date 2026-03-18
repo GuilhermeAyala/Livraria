@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 
-function LoginForm({ onSubmit }){
+function LoginForm({ onSubmit}: any): any{
     const navigate = useNavigate();
     const [form, setForm] = useState({nome:'', email:'', senha:''});
     const [erro, setErro] = useState('');
 
-    function handleChange(e){
+    function handleChange(e : any){
         const {name, value} = e.target;
         setForm((f) => ({...f, [name]: value}));
     }
 
-    function ValidarForm(form){
+    function ValidarForm(form : any){
         if(!form.nome.trim()){
             return 'Nome Obrigatório';
         }
@@ -24,7 +24,7 @@ function LoginForm({ onSubmit }){
         return '';
     }
 
-    function handleSubmit(e){
+    function handleSubmit(e: any){
         e.preventDefault();
 
         const message = ValidarForm(form)
@@ -33,10 +33,7 @@ function LoginForm({ onSubmit }){
             return;
         }
 
-        if (form.email === "@admin"){
-            navigate("/admin", {state: {nome: form.nome}});
-        }
-        else if(form.email === "@user"){
+        if(form.email === "@user"){
             navigate("/user", {state: {nome: form.nome}});
         }
         else{
@@ -61,7 +58,7 @@ function LoginForm({ onSubmit }){
                 value={form.nome} onChange={handleChange}/> <br />
 
                 <label htmlFor="email">Email</label>
-                <input style={ {padding: 10, border: "solid", borderRadius: 10} } type="text" placeholder="Digite @admin ou @user" name="email" id="email"
+                <input style={ {padding: 10, border: "solid", borderRadius: 10} } type="text" placeholder="Digite @user" name="email" id="email"
                 value={form.email} onChange={handleChange}/> <br />
 
                 <label htmlFor="senha">Senha</label>

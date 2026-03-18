@@ -3,7 +3,6 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CarrinhoProvider } from './contexts/CarrinhoContext';
 import { FavoritosProvider } from './contexts/FavoritosContext';
 import LoginForm from './components/LoginForm';
-import AdminPage from './pages/AdminPage';
 import UserPage from './pages/UserPage';
 import Favoritos from './components/Favoritos';
 import Profile from './components/Profile';
@@ -17,7 +16,6 @@ function App() {
     <FavoritosProvider>
       <Routes>
         <Route path='/' element={<LoginForm />} />
-        <Route path='/admin' element={<AdminPage />} />
         <Route path='/user' element={<UserPage />} />
         <Route path='/user/Carrinho' element={<CarrinhoView />} />
         <Route path='/user/Favoritos' element={<Favoritos />} />
