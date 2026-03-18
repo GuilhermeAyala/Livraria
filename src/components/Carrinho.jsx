@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Carrinho } from "../data/carrinho.js";
+import { Carrinho } from "../data/carrinho.ts";
 import { useCarrinho } from "../contexts/CarrinhoContext.jsx";
 
 export default function CarrinhoView() {
