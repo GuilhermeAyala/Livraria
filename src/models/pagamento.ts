@@ -1,16 +1,3 @@
-//export type MetodoPagamento = "Credito" | "Dinheiro" | "Pix" | "Boleto" | "";
-
-//export const DESCONTOS: Record<string, number> = {
-//    Credito: 0.2, 
-//    Dinheiro: 0,
-//    Pix: 0,
-//    Boleto: 0,
-//};
-
-//export function aplicarDesconto(subtotal: number, metodo: MetodoPagamento): number {
-//  const desconto = DESCONTOS[metodo] ?? 0;
-//  return subtotal * (1 - desconto);
-//}
 export enum Pagamentos {
     Credito,
     Debito,
@@ -146,25 +133,3 @@ export function metodoPagamento(escolha: Pagamentos, valorProduto: number): numb
         return valorProduto
     }
 }
-
-//export function FazerPagamento(desconto: number, dinheiroDisponivel: number, pagamento, metodoPagamento: string, total){
-    //total = ComprarLivro(total);
-    //metodoPagamento = "Dinheiro";
-
-    //switch(metodoPagamento){
-    //    case "Cartão de Crédito":
-    //        desconto = 0.10
-    //        pagamento = ComprarLivro(total) - (total * desconto);
-    //        console.log(`O valor total a ser pago é igual a ${pagamento}`);
-    //        break;
-    //       
-    //}
-    //console.log("Compra finalizada!");
-    //console.log(`Seu método de pagamento é ${metodoPagamento}`);
-    //return{
-    //    sucesso: true,
-    //    metodoPagamento, 
-    //    total, 
-    //};
-
-//checks: Função AdicionarCartão e ValidarCartão estão funcionando
