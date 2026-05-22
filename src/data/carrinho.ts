@@ -1,6 +1,6 @@
 import { Book } from "../models/booksModel";
 import { calcularTotal, detalheDaCompra } from "../api/booksApi";
-import { DESCONTOS } from "../models/pagamento";
+import { Pagamentos, metodoPagamento } from "../models/pagamento";
 
 export type BookNoCarrinho = {
   id: number;
@@ -48,21 +48,14 @@ export class Carrinho {
     return detalheDaCompra(this.books);
   }
  
-  finalizarPagamento(metodoPagamento: string, dinheiroDisponivel: number = 0) {
-    const desconto = DESCONTOS[metodoPagamento] ?? 0;
+  finalizarPagamento(escolha: Pagamentos, dinheiroDisponivel: number = 0) {
     const total = this.calcularTotal();
-    const pagamento = total * (1 - desconto);
-    const troco = metodoPagamento === "Dinheiro" ? dinheiroDisponivel - pagamento : 0;
- 
-    if (metodoPagamento === "Dinheiro" && dinheiroDisponivel < pagamento) {
-      return { sucesso: false };
-    }
- 
+    const pagamento = metodoPagamento(escolha, total);
+    
     return {
       sucesso: true,
       metodoPagamento,
       total: pagamento.toFixed(2),
-      troco: troco > 0 ? troco.toFixed(2) : 0,
     };
   }
 }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { MetodoPagamento, aplicarDesconto, gerarCodigoBarras, DESCONTOS } from "../models/pagamento";
+import { Pagamentos, metodoPagamento, gerarCodigoBarras} from "../models/pagamento";
 
 const Pagamento = () => {
     const location = useLocation();
@@ -8,21 +8,25 @@ const Pagamento = () => {
 
     const [valorFinal, setValorFinal] = useState(subtotalInicial);
     const [codigoBarras, setCodigoBarras] = useState("");
-    const [metodoPagamento, setMetodoPagamento] = useState<MetodoPagamento>("");
+    const [escolha, setEscolha] = useState<Pagamentos | null>(null);
 
     const handlePagamento = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const metodo = e.target.id as MetodoPagamento;
-        setMetodoPagamento(metodo);
+        const escolha = Number(e.target.value) as Pagamentos;
+        setEscolha(escolha);
         setCodigoBarras("");
-        setValorFinal(aplicarDesconto(subtotalInicial, metodo));
+        setValorFinal(metodoPagamento(escolha, subtotalInicial));
 
-        if(metodo === "Boleto"){
+        if(escolha === Pagamentos.Boleto){
            setCodigoBarras(gerarCodigoBarras());
         }
         
     };
 
-    const desconto = DESCONTOS[metodoPagamento];
+    const temDesconto = escolha === Pagamentos.Credito
+        ? 20
+        : (escolha === Pagamentos.Pix || escolha === Pagamentos.Boleto)
+        ? 15
+        : 0;
 
     return (
     <div style={{ padding: 16 }}>
@@ -30,32 +34,39 @@ const Pagamento = () => {
  
       <form>
         <label>
-          <input type="radio" name="metodo" id="Credito" onChange={handlePagamento} />
-          {" "}Crédito ({(DESCONTOS["Credito"] * 100)}% de desconto)
+          <input type="radio" name="escolha" id="Credito" value={Pagamentos.Credito} onChange={handlePagamento} />
+          {" "}Crédito (20% de desconto)
         </label>
         <br />
         <label>
-          <input type="radio" name="metodo" id="Dinheiro" onChange={handlePagamento} />
-          {" "}Dinheiro
+          <input type="radio" name="escolha" id="Debito" value={Pagamentos.Debito} onChange={handlePagamento} />
+          {" "}Débito
         </label>
         <br />
         <label>
-          <input type="radio" name="metodo" id="Boleto" onChange={handlePagamento} />
-          {" "}Boleto
+          <input type="radio" name="escolha" value={Pagamentos.Pix} onChange={handlePagamento} />
+          {" "}Pix (15% de desconto)
+        </label>
+        <br />
+        <label>
+          <input type="radio" name="escolha" id="Boleto" value={Pagamentos.Boleto} onChange={handlePagamento} />
+          {" "}Boleto(15% de desconto)
         </label>
       </form>
  
-      {metodoPagamento && desconto > 0 && (
-        <p>Desconto aplicado: {desconto * 100}%</p>
+      {temDesconto > 0 && (
+        <p>Desconto aplicado: {temDesconto}%</p>
       )}
  
       <h5>Valor: R$ {valorFinal.toFixed(2)}</h5>
  
-      {metodoPagamento === "Boleto" && codigoBarras && (
+      {escolha === Pagamentos.Boleto && codigoBarras && (
         <h4>Código de barras: {codigoBarras}</h4>
       )}
     </div>
   );
 }
+
+//variável escolha, substituiu o metodoPagamento, ela quem define como será pago
 
 export default Pagamento;

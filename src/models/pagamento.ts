@@ -1,15 +1,21 @@
-export type MetodoPagamento = "Credito" | "Dinheiro" | "Pix" | "Boleto" | "";
+//export type MetodoPagamento = "Credito" | "Dinheiro" | "Pix" | "Boleto" | "";
 
-export const DESCONTOS: Record<string, number> = {
-    Credito: 0.2, 
-    Dinheiro: 0,
-    Pix: 0,
-    Boleto: 0,
-};
+//export const DESCONTOS: Record<string, number> = {
+//    Credito: 0.2, 
+//    Dinheiro: 0,
+//    Pix: 0,
+//    Boleto: 0,
+//};
 
-export function aplicarDesconto(subtotal: number, metodo: MetodoPagamento): number {
-  const desconto = DESCONTOS[metodo] ?? 0;
-  return subtotal * (1 - desconto);
+//export function aplicarDesconto(subtotal: number, metodo: MetodoPagamento): number {
+//  const desconto = DESCONTOS[metodo] ?? 0;
+//  return subtotal * (1 - desconto);
+//}
+export enum Pagamentos {
+    Credito,
+    Debito,
+    Pix,
+    Boleto 
 }
 
 export function gerarCodigoBarras(tamanho = 48): string {
@@ -127,6 +133,18 @@ export const gerarBoleto = (id: number, tempoValidade: number, vencimento: numbe
         }
     }
     return new Boleto(id, tempoValidade, vencimento, codigoBarras, statusBoleto);
+}
+
+export function metodoPagamento(escolha: Pagamentos, valorProduto: number): number {
+    if(escolha === Pagamentos.Credito){
+        return valorProduto * 0.8;
+    }
+    else if(escolha === Pagamentos.Pix || escolha === Pagamentos.Boleto){
+        return valorProduto * 0.85;
+    }
+    else{
+        return valorProduto
+    }
 }
 
 //export function FazerPagamento(desconto: number, dinheiroDisponivel: number, pagamento, metodoPagamento: string, total){
