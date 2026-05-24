@@ -7,6 +7,7 @@ const Profile = () => {
     const nome = location.state?.nome;
     const [address, setAddress] = useState('');
 
+
     return(
         <div>
             <h2>Olá {nome}!</h2>
@@ -14,6 +15,8 @@ const Profile = () => {
                 Endereço:{""}
                 <input type="text" value={address} name="endereco" id="endereco" onChange={e => setAddress(e.target.value)}/>
             </label>
+            <button>Adicionar Cartão de Crédito</button>
+
             <br />
             <button onClick={() => navigate("/")}>LogOut</button>           
         </div>

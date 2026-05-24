@@ -61,7 +61,7 @@ export default function CarrinhoView() {
                   </td>
                   <td>R$ {(book.price * book.quantidade).toFixed(2)}</td>
                   <td>
-                    <button onClick={() => removerDoCarrinho(book.id)}>Remover</button>
+                    <button style={{backgroundColor: "red", padding: 1.5, width: 100}} onClick={() => removerDoCarrinho(book.id)}>Remover</button>
                   </td>
                 </tr>
               ))}
