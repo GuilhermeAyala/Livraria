@@ -20,6 +20,25 @@ export class Pagamento {
     }
 }
 
+export class Cartao_Debito extends Pagamento {
+    nomeTitular: string;
+    numeroCartao: string;
+    validade: Date;
+    marca: string;
+    cvc: string;
+    saldo: number;
+
+    constructor(id: number, nomeTitular: string, numeroCartao: string, validade: Date, marca: string, cvc: string, saldo: number){
+        super(id);
+        this.nomeTitular = nomeTitular;
+        this.numeroCartao = numeroCartao;
+        this.validade = validade;
+        this.marca = marca;
+        this.cvc = cvc;
+        this.saldo = saldo;
+    }
+}
+
 export class Cartao_Credito extends Pagamento {
     nomeTitular: string;
     numeroCartao: string;
@@ -46,7 +65,7 @@ export class Boleto extends Pagamento {
     tempoValidade: number;
     vencimento: number;
     codigoBarras: string;
-    statusBoleto: object = {
+    statusBoleto: object = { //statusBoleto = "pendente" | "ativo" e etc 
         pendente : "pendente",
         ativo: "ativo",
         vencido: "vencido",
@@ -100,6 +119,31 @@ export const AdicionarCartão = (id: number, nomeTitular: string, numeroCartao: 
         )
 
     }
+
+export const AdicionarCartaoDebito = (id: number, nomeTitular: string, numeroCartao: string, validade: Date, marca: string, cvc: string, saldo: number) => {
+    const onlyLetters = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
+
+    if(!nomeTitular || !numeroCartao || !validade || !marca || !cvc || !saldo){
+        throw new Error("os dados devem existir");
+    }
+    if(!onlyLetters.test(nomeTitular)){
+        throw new Error("Nome deve conter apenas letras");
+    }
+    if(numeroCartao.length !== 16){
+        throw new Error("O cartão deve conter 16 números");
+    }
+    if(validade < new Date()){
+        throw new Error("Cartão vencido");
+    }
+    if(cvc.length !== 3){
+        throw new Error("CVC deve ter 3 dígitos");
+    }
+    if(saldo <= 0){
+        throw new Error("Saldo não pode ser negativo");
+    }
+
+    return new Cartao_Debito(id, nomeTitular, numeroCartao, validade, marca, cvc, saldo);
+}
 
 
 export const gerarBoleto = (id: number, tempoValidade: number, vencimento: number, codigoBarras: string, statusBoleto: object) => {

@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { CartoesProvider } from './contexts/CartoesContext';
 import { CarrinhoProvider } from './contexts/CarrinhoContext';
 import { FavoritosProvider } from './contexts/FavoritosContext';
 import LoginForm from './components/LoginForm';
@@ -14,6 +15,7 @@ function App() {
     <BrowserRouter>
     <CarrinhoProvider>
     <FavoritosProvider>
+    <CartoesProvider>
       <Routes>
         <Route path='/' element={<LoginForm />} />
         <Route path='/user' element={<UserPage />} />
@@ -22,6 +24,7 @@ function App() {
         <Route path='/user/Profile' element={<Profile />} />
         <Route path='/user/Pagamento' element={<Pagamento />}/>
       </Routes>
+    </CartoesProvider>
     </FavoritosProvider>
     </CarrinhoProvider>
     </BrowserRouter>

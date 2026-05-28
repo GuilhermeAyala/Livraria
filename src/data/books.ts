@@ -10,5 +10,3 @@ export const books: Book[] = [
     new Book(6, "O Livro Vermelho", "Mao Tse-Tung", 1954, 23.00, 1, true)
     
 ];
-
-
