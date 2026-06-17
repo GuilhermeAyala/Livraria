@@ -1,12 +1,19 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Book } from "../models/booksModel";
 import { BookNoCarrinho, bookParaCarrinho } from "../data/carrinho";
+import {
+  adicionarLivroAoCarrinho,
+  alterarLivroNoCarrinho,
+  getCarrinho,
+  removerLivroDoCarrinho,
+} from "../api/booksApi";
  
 type CarrinhoContextType = {
   livrosNoCarrinho: BookNoCarrinho[];
   adicionarAoCarrinho: (book: Book) => void;
   alterarQuantidade: (id: number, qtd: string) => void;
   removerDoCarrinho: (id: number) => void;
+  limparCarrinho: () => void;
 };
  
 const CarrinhoContext = createContext<CarrinhoContextType | null>(null);
@@ -28,8 +35,14 @@ export const CarrinhoProvider = ({ children }: { children: React.ReactNode }) =>
       localStorage.setItem(STORAGE_KEY, JSON.stringify(livrosNoCarrinho));
     } catch {}
   }, [livrosNoCarrinho]);
+
+  useEffect(() => {
+    getCarrinho()
+      .then(setLivrosNoCarrinho)
+      .catch(() => {});
+  }, []);
  
-  const adicionarAoCarrinho = (book: Book) => {
+  const adicionarAoCarrinho = async (book: Book) => {
     setLivrosNoCarrinho((prev) => {
       const existe = prev.find((b) => b.id === book.id);
       if (existe) {
@@ -39,23 +52,44 @@ export const CarrinhoProvider = ({ children }: { children: React.ReactNode }) =>
       }
       return [...prev, bookParaCarrinho(book)];
     });
+
+    try {
+      await adicionarLivroAoCarrinho(book.id);
+      const carrinhoAtualizado = await getCarrinho();
+      setLivrosNoCarrinho(carrinhoAtualizado);
+    } catch {}
   };
  
-  const alterarQuantidade = (id: number, qtd: string) => {
+  const alterarQuantidade = async (id: number, qtd: string) => {
+    const quantidade = Math.max(0, Number(qtd) || 0);
     setLivrosNoCarrinho((prev) =>
       prev.map((b) =>
-        b.id === id ? { ...b, quantidade: Math.max(0, Number(qtd) || 0) } : b
+        b.id === id ? { ...b, quantidade } : b
       )
     );
+
+    try {
+      await alterarLivroNoCarrinho(id, quantidade);
+      const carrinhoAtualizado = await getCarrinho();
+      setLivrosNoCarrinho(carrinhoAtualizado);
+    } catch {}
   };
  
-  const removerDoCarrinho = (id: number) => {
+  const removerDoCarrinho = async (id: number) => {
     setLivrosNoCarrinho((prev) => prev.filter((b) => b.id !== id));
+
+    try {
+      await removerLivroDoCarrinho(id);
+    } catch {}
+  };
+
+  const limparCarrinho = () => {
+    setLivrosNoCarrinho([]);
   };
  
   return (
     <CarrinhoContext.Provider
-      value={{ livrosNoCarrinho, adicionarAoCarrinho, alterarQuantidade, removerDoCarrinho }}
+      value={{ livrosNoCarrinho, adicionarAoCarrinho, alterarQuantidade, removerDoCarrinho, limparCarrinho }}
     >
       {children}
     </CarrinhoContext.Provider>

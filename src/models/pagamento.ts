@@ -120,6 +120,8 @@ export const AdicionarCartão = (id: number, nomeTitular: string, numeroCartao: 
 
     }
 
+export const AdicionarCartao = AdicionarCartão;
+
 export const AdicionarCartaoDebito = (id: number, nomeTitular: string, numeroCartao: string, validade: Date, marca: string, cvc: string, saldo: number) => {
     const onlyLetters = /^[A-Za-zÀ-ÖØ-öø-ÿ\s]+$/;
 

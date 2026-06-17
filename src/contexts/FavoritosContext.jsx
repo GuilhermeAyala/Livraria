@@ -1,5 +1,10 @@
 // src/componentes/FavoritosContext.jsx
 import React, { createContext, useContext, useState, useEffect } from "react";
+import {
+  adicionarLivroAosFavoritos,
+  getFavoritos,
+  removerLivroDosFavoritos,
+} from "../api/booksApi";
 
 const FavoritosContext = createContext();
 
@@ -19,15 +24,33 @@ export function FavoritosProvider({ children }) {
     } catch {}
   }, [favoritos]);
 
-  function adicionarFavorito(book) {
+  useEffect(() => {
+    getFavoritos()
+      .then(setFavoritos)
+      .catch(() => {});
+  }, []);
+
+  async function adicionarFavorito(book) {
     setFavoritos(prev => {
       if (prev.some(b => b.id === book.id)) return prev;
       return [...prev, { id: book.id, name: book.name, autor: book.autor, price: book.price }];
     });
+
+    try {
+      const favorito = await adicionarLivroAosFavoritos(book.id);
+      setFavoritos(prev => {
+        if (prev.some(b => b.id === favorito.id)) return prev;
+        return [...prev, favorito];
+      });
+    } catch {}
   }
 
-  function removerFavorito(id) {
+  async function removerFavorito(id) {
     setFavoritos(prev => prev.filter(b => b.id !== id));
+
+    try {
+      await removerLivroDosFavoritos(id);
+    } catch {}
   }
 
   return (

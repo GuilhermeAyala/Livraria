@@ -5,8 +5,9 @@
   "type": "commonjs",
   "scripts": {
     "dev": "ts-node index.ts",
-    "generate": "prisma generate"
-
+    "build": "tsc --noEmit",
+    "generate": "prisma generate",
+    "seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
