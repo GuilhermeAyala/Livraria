@@ -46,6 +46,12 @@ export async function ensureUser(userId: number) {
 }
 
 export async function registerUser(input: RegisterInput) {
+  const existingUser = await prisma.user.findUnique({ where: { email: input.email } });
+
+  if (existingUser) {
+    throw new Error("Email ja cadastrado.");
+  }
+
   const user = await prisma.user.create({
     data: {
       name: input.name,

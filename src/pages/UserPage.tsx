@@ -4,12 +4,12 @@ import Menu  from '../components/Menu'
 import ListaBooks from "../components/ListaBooks";
 import { books } from "../data/books";
 import { useCarrinho } from "../contexts/CarrinhoContext";
-import { getLivros } from "../api/booksApi";
+import { getCurrentUser, getLivros } from "../api/booksApi";
 import { Book } from "../models/booksModel";
 
 const UserPage = () => {
     const location = useLocation();
-    const nome = location.state?.nome;
+    const nome = location.state?.nome || getCurrentUser()?.name || "Usuario";
     const { adicionarAoCarrinho } = useCarrinho();
     const [livros, setLivros] = useState<Book[]>(books);
 

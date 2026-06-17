@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { AdicionarCartao, AdicionarCartaoDebito } from "../models/pagamento";
 import { useCartoes } from "../contexts/CartoesContext";
-import { adicionarCartaoAoPerfil, getProfile, updateProfile } from "../api/booksApi";
+import { adicionarCartaoAoPerfil, clearCurrentUser, getCurrentUser, getProfile, updateProfile } from "../api/booksApi";
 
 const Profile = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const nome = location.state?.nome || "Usuario";
+  const nome = location.state?.nome || getCurrentUser()?.name || "Usuario";
   const { adicionarCartao } = useCartoes();
   const [address, setAddress] = useState("");
   const [abaCartao, setAbaCartao] = useState<"Credito" | "Debito" | null>(null);
@@ -158,7 +158,7 @@ const Profile = () => {
       )}
 
       <br />
-      <button onClick={() => navigate("/")}>LogOut</button>
+      <button onClick={() => { clearCurrentUser(); navigate("/"); }}>LogOut</button>
     </div>
   );
 };

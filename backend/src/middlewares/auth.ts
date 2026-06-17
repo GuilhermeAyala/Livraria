@@ -8,19 +8,24 @@ export type AuthenticatedRequest = Request & {
 /*
 BACKEND LIVRARIA - IDEIA GERAL
 
-Esta etapa ainda usa um usuario simulado por header para facilitar o estudo:
-- x-user-id: id do usuario atual, com fallback para 1
+Esta etapa ainda usa headers para facilitar o estudo:
+- x-user-id: id do usuario atual
 - x-user-role: USER ou ADMIN, com fallback para USER
 
 Quando JWT entrar, este middleware deve validar o token e preencher
 req.userId e req.userRole a partir do usuario autenticado.
 */
-export function simulateAuth(req: Request, _res: Response, next: NextFunction) {
+export function simulateAuth(req: Request, res: Response, next: NextFunction) {
   const headerUserId = Number(req.header("x-user-id"));
   const headerRole = req.header("x-user-role");
 
+  if (!Number.isInteger(headerUserId) || headerUserId <= 0) {
+    res.status(401).json({ error: "Usuario nao autenticado." });
+    return;
+  }
+
   const request = req as AuthenticatedRequest;
-  request.userId = Number.isInteger(headerUserId) && headerUserId > 0 ? headerUserId : 1;
+  request.userId = headerUserId;
   request.userRole = headerRole === "ADMIN" ? "ADMIN" : "USER";
 
   next();

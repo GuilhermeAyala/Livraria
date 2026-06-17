@@ -1,28 +1,42 @@
+import { createHmac, randomBytes } from "crypto";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+function hashPassword(password: string) {
+  const salt = randomBytes(16).toString("hex");
+  const hash = createHmac("sha256", salt).update(password).digest("hex");
+  return `${salt}:${hash}`;
+}
+
 async function main() {
   await prisma.user.upsert({
-    where: { email: "admin@livraria.local" },
-    update: {},
+    where: { email: "usuario@livraria.local" },
+    update: {
+      name: "Usuario Demo",
+      passwordHash: hashPassword("123456"),
+      role: "USER",
+    },
     create: {
-      name: "Administrador",
-      email: "admin@livraria.local",
-      passwordHash: "seed",
-      role: "ADMIN",
+      name: "Usuario Demo",
+      email: "usuario@livraria.local",
+      passwordHash: hashPassword("123456"),
+      role: "USER",
     },
   });
 
   await prisma.user.upsert({
-    where: { email: "usuario1@livraria.local" },
-    update: {},
+    where: { email: "admin@livraria.local" },
+    update: {
+      name: "Administrador",
+      passwordHash: hashPassword("admin123"),
+      role: "ADMIN",
+    },
     create: {
-      id: 1,
-      name: "Usuario Demo",
-      email: "usuario1@livraria.local",
-      passwordHash: "seed",
-      role: "USER",
+      name: "Administrador",
+      email: "admin@livraria.local",
+      passwordHash: hashPassword("admin123"),
+      role: "ADMIN",
     },
   });
 
@@ -36,11 +50,11 @@ async function main() {
     { name: "O Livro Vermelho", autor: "Mao Tse-Tung", year: 1954, price: 23, quantity: 1 },
   ];
 
-  for (const book of books) {
+  for (const [index, book] of books.entries()) {
     await prisma.book.upsert({
-      where: { id: books.indexOf(book) + 1 },
-      update: book,
-      create: { id: books.indexOf(book) + 1, ...book, isAvailable: book.quantity > 0 },
+      where: { id: index + 1 },
+      update: { ...book, isAvailable: book.quantity > 0 },
+      create: { id: index + 1, ...book, isAvailable: book.quantity > 0 },
     });
   }
 }
