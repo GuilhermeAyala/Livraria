@@ -1,21 +1,17 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+type LivroComQuantidade = {
+  quantidade: number;
+};
 
-const prisma = new PrismaClient();
+export function existeLivro<T>(livro: T | null | undefined): T {
+  if (!livro) {
+    throw new Error("O livro nao existe");
+  }
 
-function ExisteLivro(books: object){
-    if(!books){
-    throw new Error("O livro não existe, banco vazio")
-    //return false;
-    }
-
-    return books;
+  return livro;
 }
 
-function validarLivro(){
-    if(books.quantidade < 0){
-        books.isAvailable = false
-        throw new Error("Livro indisponível, quantidade insuficiente")
-    }
+export function validarQuantidade(livro: LivroComQuantidade): void {
+  if (livro.quantidade <= 0) {
+    throw new Error("Livro indisponivel, quantidade insuficiente");
+  }
 }
-
-//if(books.nome ==)
