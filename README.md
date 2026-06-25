@@ -1,20 +1,62 @@
-# React + Vite
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-Currently, two official plugins are available:
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-## Expanding the ESLint configuration
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# IDEIAS DO PROJETO E ORGANIZAÇÕES GERAIS
+# Livraria
 
-## IDEIAS DO PROJETO E ORGANIZAÇÕES GERAIS
-Aplicação para se comportar como livraria, adição de livros, dettahles da compra e etc
-Classes:
+Projeto de uma aplicação de livraria online, desenvolvido inicialmente com foco no frontend em React. A aplicação permite visualizar livros, pesquisar títulos, adicionar itens ao carrinho, favoritar livros e simular um fluxo de pagamento.
+
+O backend está em fase inicial de estruturação e ainda não representa a versão final fullstack do projeto.
+
+## Status do Projeto
+
+Frontend: funcional  
+Backend: em desenvolvimento
+
+## Tecnologias Utilizadas
+
+### Frontend
+- React
+- Vite
+- React Router DOM
+- TypeScript
+- Context API
+- LocalStorage
+- CSS
+
+### Backend
+- Node.js
+- Express
+- TypeScript
+- Prisma
+- MySQL
+
+## Funcionalidades Atuais
+- Login inicial simples
+- Listagem de livros
+- Busca de livros por nome
+- Adição de livros ao carrinho
+- Alteração de quantidade no carrinho
+- Remoção de itens do carrinho
+- Cálculo de subtotal da compra
+- Detalhes da compra
+- Favoritar livros
+- Persistência local de carrinho e favoritos com LocalStorage
+- Tela de pagamento com opções simuladas
+- Simulação de desconto por método de pagamento
+- Geração de código de barras para boleto
+
+## Classes:
 -Books
 -Users
 -Pagamento
 -Carrinho
 
-Arquitetura: Microsserviços
-Tecnologias: Typescript, ReactJS
+## Arquitetura: 
+-MVC moderno com Model, View, Controller e o Service
 
-npx prisma db pull para atualizar o banco de dados e npx prisma studio para ver seu localhost 
+## Organização do Frontend
+A pasta `src` está organizada da seguinte forma:
+src/
+  components/
+  contexts/
+  data/
+  models/
+  pages/
