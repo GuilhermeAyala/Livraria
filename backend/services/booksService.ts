@@ -15,7 +15,10 @@ function validarLivro(){
         books.isAvailable = false
         throw new Error("Livro indisponível, quantidade insuficiente")
     }
-    if()
+    if(books.valor < 0){
+        throw new Error("O valor deve ser maior que zero")
+    }
+    
 }
 
 //if(books.nome ==)
