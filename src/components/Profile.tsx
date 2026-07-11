@@ -89,6 +89,7 @@ const Profile = () => {
                 <button onClick={() => setMostrarAcompanhamento((valor) => !valor)}>
                     {mostrarAcompanhamento ? "Ocultar pedido" : "Acompanhar pedido"}
                 </button>
+                <button onClick={() => navigate("/user")}>Voltar ao Menu</button>
             </div>
 
             {mostrarAcompanhamento && <AcompanhamentoPedido />}
