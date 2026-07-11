@@ -1,17 +1,21 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Pagamentos, metodoPagamento, gerarCodigoBarras} from "../models/pagamento";
 import { useCartoes } from "../contexts/CartoesContext";
+import { usePedido } from "../contexts/PedidoContext";
 
 const Pagamento = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const subtotalInicial: number = location.state?.subtotal || 0;
     const { cartoes } = useCartoes();
+    const { criarPedido } = usePedido();
 
     const [valorFinal, setValorFinal] = useState(subtotalInicial);
     const [codigoBarras, setCodigoBarras] = useState("");
     const [escolha, setEscolha] = useState<Pagamentos | null>(null);
     const [cartaoSelecionado, setCartaoSelecionado] = useState<number | null>(null);
+    const [mensagem, setMensagem] = useState("");
 
     const handlePagamento = (e: React.ChangeEvent<HTMLInputElement>) => {
         const escolha = Number(e.target.value) as Pagamentos;
@@ -32,9 +36,53 @@ const Pagamento = () => {
         ? 15
         : 0;
 
-    const cartoesFiltrados = cartoes.filter(c => {
+    const cartoesFiltrados = cartoes.filter((c) =>
       escolha === Pagamentos.Credito ? c.tipo === "Credito" : c.tipo === "Debito"
-    })
+    );
+
+    const nomeMetodoPagamento = escolha === Pagamentos.Credito
+      ? "Credito"
+      : escolha === Pagamentos.Debito
+      ? "Debito"
+      : escolha === Pagamentos.Pix
+      ? "Pix"
+      : escolha === Pagamentos.Boleto
+      ? "Boleto"
+      : "";
+
+    const concluirCompra = () => {
+      setMensagem("");
+
+      if (subtotalInicial <= 0) {
+        setMensagem("Nao existe compra para concluir.");
+        return;
+      }
+
+      if (escolha === null) {
+        setMensagem("Escolha uma forma de pagamento antes de concluir.");
+        return;
+      }
+
+      if (
+        (escolha === Pagamentos.Credito || escolha === Pagamentos.Debito) &&
+        cartaoSelecionado === null
+      ) {
+        setMensagem("Selecione um cartao antes de concluir a compra.");
+        return;
+      }
+
+      const statusInicial =
+        escolha === Pagamentos.Credito || escolha === Pagamentos.Debito ? 1 : 0;
+
+      const pedido = criarPedido({
+        valor: valorFinal,
+        metodoPagamento: nomeMetodoPagamento,
+        statusAtual: statusInicial,
+        codigoBarras: escolha === Pagamentos.Boleto ? codigoBarras : undefined,
+      });
+
+      setMensagem(`Compra concluida. Pedido ${pedido.id} criado para acompanhamento.`);
+    };
 
     return (
     <div style={{ padding: 16 }}>
@@ -95,6 +143,21 @@ const Pagamento = () => {
       {escolha === Pagamentos.Boleto && codigoBarras && (
         <h4>Código de barras: {codigoBarras}</h4>
       )}
+
+      <button type="button" onClick={concluirCompra}>
+        Concluir compra
+      </button>
+
+      {mensagem && <p>{mensagem}</p>}
+
+      <button
+        type="button"
+        onClick={() =>
+          navigate("/user/Profile", { state: { mostrarAcompanhamento: true } })
+        }
+      >
+        Acompanhar pedido
+      </button>
     </div>
   );
 }

@@ -426,6 +426,118 @@ div[style*="margin-top: 12"] {
   margin-top: 1rem !important;
 }
 
+.order-tracking {
+  width: min(100%, 54rem);
+  margin-top: 1.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  background: var(--white);
+}
+
+.order-tracking__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 1rem;
+}
+
+.order-tracking__header p {
+  margin: 0;
+}
+
+.order-tracking__badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  color: var(--ink);
+  background: var(--accent);
+  font-size: 0.9rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.order-status-control {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 1rem;
+  color: var(--ink);
+  font-weight: 800;
+}
+
+.order-status-control select {
+  width: min(100%, 28rem);
+}
+
+.order-timeline {
+  position: relative;
+  display: grid;
+  gap: 0;
+  margin: 1.25rem 0 0;
+  list-style: none;
+}
+
+.order-timeline__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.75rem 1fr;
+  gap: 0.75rem;
+  padding-bottom: 1.25rem;
+}
+
+.order-timeline__item::before {
+  content: "";
+  position: absolute;
+  top: 1.1rem;
+  bottom: 0;
+  left: 0.5rem;
+  width: 1px;
+  background: var(--line);
+}
+
+.order-timeline__item:last-child {
+  padding-bottom: 0;
+}
+
+.order-timeline__item:last-child::before {
+  display: none;
+}
+
+.order-timeline__marker {
+  position: relative;
+  z-index: 1;
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.15rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--white);
+}
+
+.order-timeline__item--done .order-timeline__marker,
+.order-timeline__item--current .order-timeline__marker {
+  background: var(--ink);
+}
+
+.order-timeline__item--current .order-timeline__marker {
+  box-shadow: 0 0 0 4px rgba(216, 205, 188, 0.75);
+}
+
+.order-timeline__content strong {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--ink);
+}
+
+.order-timeline__content p {
+  margin: 0;
+}
+
 @media (max-width: 720px) {
   h1 {
     font-size: clamp(2.5rem, 18vw, 4rem);
@@ -459,5 +571,15 @@ div[style*="margin-top: 12"] {
   body > div ul[style*="display: flex"] > li:first-child input,
   body > div ul[style*="display: flex"] > li:first-child button {
     width: 100%;
+  }
+
+  .order-tracking__header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .order-tracking__badge {
+    width: fit-content;
+    white-space: normal;
   }
 }

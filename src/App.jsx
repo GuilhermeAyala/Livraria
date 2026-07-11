@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartoesProvider } from './contexts/CartoesContext';
 import { CarrinhoProvider } from './contexts/CarrinhoContext';
 import { FavoritosProvider } from './contexts/FavoritosContext';
+import { PedidoProvider } from './contexts/PedidoContext';
 import LoginForm from './components/LoginForm';
 import UserPage from './pages/UserPage';
 import Favoritos from './components/Favoritos';
@@ -16,6 +17,7 @@ function App() {
     <CarrinhoProvider>
     <FavoritosProvider>
     <CartoesProvider>
+    <PedidoProvider>
       <Routes>
         <Route path='/' element={<LoginForm />} />
         <Route path='/user' element={<UserPage />} />
@@ -24,6 +26,7 @@ function App() {
         <Route path='/user/Profile' element={<Profile />} />
         <Route path='/user/Pagamento' element={<Pagamento />}/>
       </Routes>
+    </PedidoProvider>
     </CartoesProvider>
     </FavoritosProvider>
     </CarrinhoProvider>

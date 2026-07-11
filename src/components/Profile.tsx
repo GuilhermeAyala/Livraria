@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import { useNavigate, useLocation } from "react-router-dom";
 import { AdicionarCartão, AdicionarCartaoDebito } from '../models/pagamento';
 import { useCartoes } from '../contexts/CartoesContext';
+import AcompanhamentoPedido from './AcompanhamentoPedido';
 
 const Profile = () => {
     const navigate = useNavigate();
@@ -10,6 +11,9 @@ const Profile = () => {
     const {adicionarCartao} = useCartoes();
     const [address, setAddress] = useState('');
     const [abaCartao, setAbaCartao] = useState<"Credito" | "Debito" | null>(null);
+    const [mostrarAcompanhamento, setMostrarAcompanhamento] = useState(
+        location.state?.mostrarAcompanhamento === true
+    );
     const [erro, setErro] = useState("");
     const [sucesso, setSucesso] = useState("");
 
@@ -81,7 +85,13 @@ const Profile = () => {
                 <button onClick={() => setAbaCartao("Credito")}>Adicionar Cartão de Crédito</button>
                 {" "}
                 <button onClick={() => setAbaCartao("Debito")}>Adicionar Cartão de Débito</button>
+                {" "}
+                <button onClick={() => setMostrarAcompanhamento((valor) => !valor)}>
+                    {mostrarAcompanhamento ? "Ocultar pedido" : "Acompanhar pedido"}
+                </button>
             </div>
+
+            {mostrarAcompanhamento && <AcompanhamentoPedido />}
 
             {abaCartao && (
                 <div style={{ marginTop: 16, border: "1px solid #ccc", padding: 16, borderRadius: 8 }}>
