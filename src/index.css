@@ -462,18 +462,6 @@ div[style*="margin-top: 12"] {
   white-space: nowrap;
 }
 
-.order-status-control {
-  display: grid;
-  gap: 0.45rem;
-  margin-top: 1rem;
-  color: var(--ink);
-  font-weight: 800;
-}
-
-.order-status-control select {
-  width: min(100%, 28rem);
-}
-
 .order-timeline {
   position: relative;
   display: grid;
@@ -538,6 +526,75 @@ div[style*="margin-top: 12"] {
   margin: 0;
 }
 
+.admin-page {
+  width: min(1180px, calc(100% - 2rem));
+  margin-inline: auto;
+  padding: clamp(1.2rem, 4vw, 3rem) 0;
+}
+
+.admin-page h1 {
+  max-width: none;
+  font-size: clamp(1.7rem, 3vw, 2.6rem);
+}
+
+.admin-section {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--line-strong);
+  padding-top: 1.25rem;
+}
+
+.admin-form {
+  display: grid;
+  gap: 0.75rem;
+  width: min(100%, 42rem);
+  margin: 0;
+}
+
+.admin-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.admin-checkbox input {
+  width: auto;
+}
+
+.admin-stock-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.admin-stock-grid strong,
+.admin-order-status {
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: 1rem;
+  background: var(--white);
+}
+
+.admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(22, 19, 15, 0.45);
+}
+
+.admin-modal {
+  width: min(100%, 42rem);
+  max-height: min(90vh, 48rem);
+  overflow: auto;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: 1.25rem;
+  background: var(--white);
+}
+
 @media (max-width: 720px) {
   h1 {
     font-size: clamp(2.5rem, 18vw, 4rem);
@@ -581,5 +638,9 @@ div[style*="margin-top: 12"] {
   .order-tracking__badge {
     width: fit-content;
     white-space: normal;
+  }
+
+  .admin-stock-grid {
+    grid-template-columns: 1fr;
   }
 }

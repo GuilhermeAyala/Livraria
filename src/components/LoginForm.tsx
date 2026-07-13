@@ -36,6 +36,9 @@ function LoginForm({ onSubmit}: any): any{
         if(form.email === "@user"){
             navigate("/user", {state: {nome: form.nome}});
         }
+        else if(form.email === "@admin"){
+            navigate("/admin", {state: {nome: form.nome}});
+        }
         else{
             alert("Digite @admin ou @user");
             return;

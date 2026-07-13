@@ -4,8 +4,10 @@ import { CartoesProvider } from './contexts/CartoesContext';
 import { CarrinhoProvider } from './contexts/CarrinhoContext';
 import { FavoritosProvider } from './contexts/FavoritosContext';
 import { PedidoProvider } from './contexts/PedidoContext';
+import { LivrosProvider } from './contexts/LivrosContext';
 import LoginForm from './components/LoginForm';
 import UserPage from './pages/UserPage';
+import AdminPage from './pages/AdminPage';
 import Favoritos from './components/Favoritos';
 import Profile from './components/Profile';
 import Pagamento from './components/Pagamento';
@@ -18,14 +20,17 @@ function App() {
     <FavoritosProvider>
     <CartoesProvider>
     <PedidoProvider>
+    <LivrosProvider>
       <Routes>
         <Route path='/' element={<LoginForm />} />
         <Route path='/user' element={<UserPage />} />
+        <Route path='/admin' element={<AdminPage />} />
         <Route path='/user/Carrinho' element={<CarrinhoView />} />
         <Route path='/user/Favoritos' element={<Favoritos />} />
         <Route path='/user/Profile' element={<Profile />} />
         <Route path='/user/Pagamento' element={<Pagamento />}/>
       </Routes>
+    </LivrosProvider>
     </PedidoProvider>
     </CartoesProvider>
     </FavoritosProvider>

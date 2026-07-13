@@ -1,7 +1,7 @@
 import { statusPedido, usePedido } from "../contexts/PedidoContext";
 
 export default function AcompanhamentoPedido() {
-  const { pedido, atualizarStatusPedido, cancelarPedido } = usePedido();
+  const { pedido, cancelarPedido } = usePedido();
 
   if (!pedido) {
     return (
@@ -28,20 +28,6 @@ export default function AcompanhamentoPedido() {
           {statusPedido[statusAtual].titulo}
         </span>
       </div>
-
-      <label className="order-status-control">
-        Status do pedido:
-        <select
-          value={statusAtual}
-          onChange={(event) => atualizarStatusPedido(Number(event.target.value))}
-        >
-          {statusPedido.map((status, index) => (
-            <option key={status.titulo} value={index}>
-              {index} - {status.titulo}
-            </option>
-          ))}
-        </select>
-      </label>
 
       <ol className="order-timeline">
         {statusPedido.map((status, index) => {
