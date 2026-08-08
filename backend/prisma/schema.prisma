@@ -14,20 +14,26 @@ datasource db {
   //url      = env("DATABASE_URL")
 }
 
-model Funcionario {
-  id  Int @id @default(autoincrement())
-  name String
-  salario Float
-  cargo String
-  idade Int 
-  totalDeVendas Float
+model User {
+  id Int @id @default(autoincrement())
+  nome String
+  email String
+  senha String
+  CPF String
+  CEP String
 }
 
-model Livro {
+model Books {
   id Int @id @default(autoincrement())
-  name String
-  price Float
+  nome String
+  valor Float
   autor String 
   ano Int 
   quantidade Int
+  isAvailable Boolean
+}
+
+model Pagamento {
+  id Int @id @default(autoincrement())
+  nome String
 }

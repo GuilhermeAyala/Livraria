@@ -537,10 +537,26 @@ div[style*="margin-top: 12"] {
   font-size: clamp(1.7rem, 3vw, 2.6rem);
 }
 
+.admin-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1.5rem;
+  border-bottom: 1px solid var(--line-strong);
+  padding-bottom: 1rem;
+}
+
+.admin-tab {
+  min-height: 2.5rem;
+}
+
+.admin-tab--active {
+  color: var(--ink) !important;
+  background: var(--accent) !important;
+}
+
 .admin-section {
   margin-top: 1.5rem;
-  border-top: 1px solid var(--line-strong);
-  padding-top: 1.25rem;
 }
 
 .admin-form {
@@ -642,5 +658,10 @@ div[style*="margin-top: 12"] {
 
   .admin-stock-grid {
     grid-template-columns: 1fr;
+  }
+
+  .admin-tabs {
+    align-items: stretch;
+    flex-direction: column;
   }
 }

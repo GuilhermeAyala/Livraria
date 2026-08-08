@@ -1,4 +1,5 @@
-import { statusPedido, usePedido } from "../contexts/PedidoContext";
+import { statusPedido } from "../constants/statusPedido";
+import { usePedido } from "../contexts/PedidoContext";
 
 export default function AcompanhamentoPedido() {
   const { pedido, cancelarPedido } = usePedido();

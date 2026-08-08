@@ -4,6 +4,8 @@ import { useLivros } from "../contexts/LivrosContext";
 import { statusPedido, usePedido } from "../contexts/PedidoContext";
 import { Book } from "../models/booksModel";
 
+type AdminTab = "adicionar" | "lista" | "estoque" | "pedido" | "financeiro";
+
 type LivroForm = {
   name: string;
   autor: string;
@@ -21,6 +23,14 @@ const formInicial: LivroForm = {
   quantidade: "",
   isAvailable: true,
 };
+
+const abasAdmin: { id: AdminTab; label: string }[] = [
+  { id: "adicionar", label: "Adicionar livro" },
+  { id: "lista", label: "Lista de livros" },
+  { id: "estoque", label: "Estoque" },
+  { id: "pedido", label: "Status do pedido" },
+  { id: "financeiro", label: "Dashboard financeiro" },
+];
 
 function livroParaForm(livro: Book): LivroForm {
   return {
@@ -52,6 +62,7 @@ function AdminPage() {
   const [formAdicionar, setFormAdicionar] = useState<LivroForm>(formInicial);
   const [livroEmEdicao, setLivroEmEdicao] = useState<Book | null>(null);
   const [formEditar, setFormEditar] = useState<LivroForm>(formInicial);
+  const [abaAtiva, setAbaAtiva] = useState<AdminTab>("adicionar");
   const [mensagem, setMensagem] = useState("");
 
   const handleFormAdicionar = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,6 +116,7 @@ function AdminPage() {
   };
 
   const abrirEdicao = (livro: Book) => {
+    setAbaAtiva("lista");
     setLivroEmEdicao(livro);
     setFormEditar(livroParaForm(livro));
     setMensagem("");
@@ -148,8 +160,22 @@ function AdminPage() {
       <h2>Painel Administrativo</h2>
       <p>Seja bem vindo, {nome || "admin"}.</p>
 
+      <nav className="admin-tabs" aria-label="Navegacao do painel administrativo">
+        {abasAdmin.map((aba) => (
+          <button
+            key={aba.id}
+            type="button"
+            className={abaAtiva === aba.id ? "admin-tab admin-tab--active" : "admin-tab"}
+            onClick={() => setAbaAtiva(aba.id)}
+          >
+            {aba.label}
+          </button>
+        ))}
+      </nav>
+
+      {abaAtiva === "adicionar" && (
       <section className="admin-section">
-        <h1>Form adicionar Livro</h1>
+        <h1>Formulario para adicionar livro</h1>
         <form onSubmit={cadastrarLivro} className="admin-form">
           <input name="name" placeholder="Nome do livro" value={formAdicionar.name} onChange={handleFormAdicionar} />
           <input name="autor" placeholder="Autor" value={formAdicionar.autor} onChange={handleFormAdicionar} />
@@ -164,14 +190,12 @@ function AdminPage() {
         </form>
         {mensagem && <p>{mensagem}</p>}
       </section>
+      )}
 
+      {abaAtiva === "lista" && (
       <section className="admin-section">
-        <h1>Editar livro</h1>
-        <p>Escolha um livro na lista abaixo para abrir o formulario de edicao.</p>
-      </section>
-
-      <section className="admin-section">
-        <h1>Lista Livros</h1>
+        <h1>Lista de livros</h1>
+        <p>Use o botao editar em cada linha para abrir o formulario de edicao.</p>
         <table>
           <thead>
             <tr>
@@ -205,7 +229,9 @@ function AdminPage() {
           </tbody>
         </table>
       </section>
+      )}
 
+      {abaAtiva === "estoque" && (
       <section className="admin-section">
         <h1>Estoque</h1>
         <div className="admin-stock-grid">
@@ -236,7 +262,9 @@ function AdminPage() {
           </tbody>
         </table>
       </section>
+      )}
 
+      {abaAtiva === "pedido" && (
       <section className="admin-section">
         <h1>Status do pedido</h1>
         {!pedido ? (
@@ -262,11 +290,14 @@ function AdminPage() {
           </div>
         )}
       </section>
+      )}
 
+      {abaAtiva === "financeiro" && (
       <section className="admin-section">
-        <h1>Dashboard-Financeiro</h1>
+        <h1>Dashboard financeiro</h1>
         <p>Area reservada para implementacao futura.</p>
       </section>
+      )}
 
       {livroEmEdicao && (
         <div className="admin-modal-backdrop">

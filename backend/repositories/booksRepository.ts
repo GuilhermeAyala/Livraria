@@ -1,27 +1,43 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
-
-export async function listarLivros(){
-    return await prisma.books.findMany()
-}
-
-export async function criarLivro(nome: string, valor: number, autor: string, ano: number, quantidade: number, isAvailable: boolean){
-    return await prisma.books.create({
-        data: {
-            nome, valor, autor, ano, quantidade, isAvailable
-        }
-    })
-}
-
-export async function editarLivro(id: number, dados: object){
-    return await prisma.books.update({
-        where: {id}, data: dados
-    })
-}
-
-export async function excluirLivro(id: number){
-        return await prisma.books.delete({
-            where: {id}
-        })
+export class BooksRepository {
+    findAll(): Books[]{
+        return this.books
     }
+
+    findById(id: number): book | undefined {
+        return this.books.find(book => book.id === id)
+    }
+
+    create(data: Omit<Book, "id">): Book {
+        const newBook: Book = {
+            id: this.currentId++,
+            ...data
+        };
+
+        this.books.push(newBook);
+        return newBook;
+    }
+
+    update(id:number, data: Partial<Omit<Book, "id">>): Book | null{
+        const book = this.findById(id);
+
+        if(!book){
+            return null;
+        }
+
+        Object.assign(book, data);
+        return book
+    }
+
+    delete(id: number): boolean {
+        const index = this.books.findIndex(book => book.id === id);
+
+        if(id === -1){
+            return false;
+        }
+
+        this.books.splice(index, 1);
+        return true;
+    }
+}
