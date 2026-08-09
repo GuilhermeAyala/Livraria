@@ -1,14 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-const usuarioRepository = (prisma as any).usuario;
+const usuarioRepository = (prisma as any).user;
 
 export type UsuarioData = {
-  name: string;
+  nome: string;
   email: string;
-  passwordHash: string;
-  cpf: string;
-  cep: string;
+  senha: string;
+  CPF: string;
+  CEP: string;
 };
 
 export type UsuarioUpdateData = Partial<UsuarioData>;

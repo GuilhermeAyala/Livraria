@@ -5,7 +5,8 @@ import { CarrinhoProvider } from './contexts/CarrinhoContext';
 import { FavoritosProvider } from './contexts/FavoritosContext';
 import { PedidoProvider } from './contexts/PedidoContext';
 import { LivrosProvider } from './contexts/LivrosContext';
-import LoginForm from './components/LoginForm';
+import EntradaForm from './components/EntradaForm';
+import CadastroForm from './components/CadastroForm';
 import UserPage from './pages/UserPage';
 import AdminPage from './pages/AdminPage';
 import Favoritos from './components/Favoritos';
@@ -22,7 +23,8 @@ function App() {
     <PedidoProvider>
     <LivrosProvider>
       <Routes>
-        <Route path='/' element={<LoginForm />} />
+        <Route path='/' element={<EntradaForm />} />
+        <Route path='/cadastro' element={<CadastroForm />} />
         <Route path='/user' element={<UserPage />} />
         <Route path='/admin' element={<AdminPage />} />
         <Route path='/user/Carrinho' element={<CarrinhoView />} />

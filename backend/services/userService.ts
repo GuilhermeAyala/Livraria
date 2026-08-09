@@ -12,14 +12,10 @@ import {
 
 type UsuarioPayload = Partial<{
   nome: string;
-  name: string;
   email: string;
   password: string;
-  passwordHash: string;
   CPF: string;
-  cpf: string;
   CEP: string;
-  cep: string;
 }>;
 
 const caracterEspecial = ["@", "!", "&", "*", "?", "#", "+", "-"];
@@ -64,41 +60,41 @@ function normalizarTexto(valor: string | undefined, campo: string) {
 function montarUser(payload: UsuarioPayload, id = 0) {
   return new User(
     id,
-    normalizarTexto(payload.nome ?? payload.name, "nome"),
+    normalizarTexto(payload.nome, "nome"),
     normalizarTexto(payload.email, "email"),
-    normalizarTexto(payload.password ?? payload.passwordHash, "password"),
-    normalizarTexto(payload.CPF ?? payload.cpf, "CPF"),
-    normalizarTexto(payload.CEP ?? payload.cep, "CEP")
+    normalizarTexto(payload.password, "password"),
+    normalizarTexto(payload.CPF, "CPF"),
+    normalizarTexto(payload.CEP, "CEP")
   );
 }
 
 function usuarioParaData(user: User): UsuarioData {
   return {
-    name: user.nome,
+    nome: user.nome,
     email: user.email,
-    passwordHash: user.password,
-    cpf: user.CPF,
-    cep: user.CEP,
+    senha: user.password,
+    CPF: user.CPF,
+    CEP: user.CEP,
   };
 }
 
 function montarAtualizacao(payload: UsuarioPayload): UsuarioUpdateData {
   const dados: UsuarioUpdateData = {};
 
-  if (payload.nome !== undefined || payload.name !== undefined) {
-    dados.name = normalizarTexto(payload.nome ?? payload.name, "nome");
+  if (payload.nome !== undefined) {
+    dados.nome = normalizarTexto(payload.nome, "nome");
   }
   if (payload.email !== undefined) {
     dados.email = normalizarTexto(payload.email, "email");
   }
-  if (payload.password !== undefined || payload.passwordHash !== undefined) {
-    dados.passwordHash = normalizarTexto(payload.password ?? payload.passwordHash, "password");
+  if (payload.password !== undefined) {
+    dados.senha = normalizarTexto(payload.password, "password");
   }
-  if (payload.CPF !== undefined || payload.cpf !== undefined) {
-    dados.cpf = normalizarTexto(payload.CPF ?? payload.cpf, "CPF");
+  if (payload.CPF !== undefined) {
+    dados.CPF = normalizarTexto(payload.CPF, "CPF");
   }
-  if (payload.CEP !== undefined || payload.cep !== undefined) {
-    dados.cep = normalizarTexto(payload.CEP ?? payload.cep, "CEP");
+  if (payload.CEP !== undefined) {
+    dados.CEP = normalizarTexto(payload.CEP, "CEP");
   }
 
   if (Object.keys(dados).length === 0) {
@@ -143,11 +139,11 @@ export async function editarUsuarioService(id: number, payload: UsuarioPayload) 
 
   const usuarioEditado = new User(
     usuarioAtual.id,
-    dados.name ?? usuarioAtual.name,
+    dados.nome ?? usuarioAtual.nome,
     dados.email ?? usuarioAtual.email,
-    dados.passwordHash ?? usuarioAtual.passwordHash,
-    dados.cpf ?? usuarioAtual.cpf ?? "",
-    dados.cep ?? usuarioAtual.cep ?? ""
+    dados.senha ?? usuarioAtual.senha,
+    dados.CPF ?? usuarioAtual.CPF,
+    dados.CEP ?? usuarioAtual.CEP
   );
 
   validarUsuario(usuarioEditado);

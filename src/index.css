@@ -210,6 +210,33 @@ body > div > div:not([class]) {
   text-transform: none;
 }
 
+.auth-form {
+  align-content: center;
+}
+
+.auth-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.auth-actions button {
+  width: fit-content;
+  min-width: 9.5rem;
+}
+
+.auth-secondary {
+  color: var(--ink) !important;
+  background: var(--white) !important;
+}
+
+.auth-error {
+  margin: 0.25rem 0 0;
+  color: var(--danger) !important;
+  font-weight: 800;
+}
+
 .min-h-screen.bg-zinc-900 {
   min-height: 100vh !important;
   background: var(--paper) !important;
@@ -628,6 +655,10 @@ div[style*="margin-top: 12"] {
 
   button,
   input {
+    width: 100%;
+  }
+
+  .auth-actions button {
     width: 100%;
   }
 
