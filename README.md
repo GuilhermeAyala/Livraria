@@ -60,3 +60,8 @@ src/
   data/
   models/
   pages/
+
+
+## Subir backend 
+cd backend
+npm run dev

@@ -1,54 +1,64 @@
-//import {} from "../services"
-//importar do service quando ele se comunicar com o livro pra pegar do banco 
-import { PrismaClient } from "@prisma/client"
-import type {Request, Response } from "express"
-import { BooksService } from "../services/booksService"
+import type { Request, Response } from "express";
+import { BooksService } from "../services/booksService";
 
-export class BooksController{
-    constructor(private booksService: BooksService){}
+function getStatusCode(error: unknown) {
+  if (!(error instanceof Error)) return 500;
+  if (error.message.includes("nao encontrado")) return 404;
+  return 400;
+}
 
-    getAll = (req: Request, res: Response) => {
-        const books = this.booksService.listarLivros();
-        return res.json(books)
-    }
+function getErrorMessage(error: unknown) {
+  return error instanceof Error ? error.message : "Erro interno do servidor.";
+}
 
-    getById = (req: Request, res: Response) => {
-        try {
-            const id = Number(req.params.id);
-            const book = this.booksService.getLivroById(id)
-        } catch(error: any) {
-            return res.status(404).json({message: error.message})
-        }
-    }
+export class BooksController {
+  constructor(private booksService: BooksService) {}
 
-    create = (req: Request, res: Response) => {
-        try {
-            const {nome, valor, autor, ano, quantidade, isAvailable} = req.body;
-            const book = this.booksService.criarLivro(nome, valor, autor, ano, quantidade, isAvailable);
-            return res.status(201).json(book);
-        } 
-        catch(error: any) {
-            return res.status(400).json({message: error.message})
-        }
+  getAll = (_req: Request, res: Response) => {
+    try {
+      const books = this.booksService.listarLivros();
+      return res.status(200).json(books);
+    } catch (error) {
+      return res.status(500).json({ message: getErrorMessage(error) });
     }
-    
-    update = (req: Request, res: Response) => {
-        try {
-            const id = Number(req.params.id);
-            const updatedBook = this.booksService.atualizarLivro(id, req.body);
-            return res.json(updatedBook);
-        } catch (error: any){
-            return res.status(400).json({message: error.message})
-        }
-    }
+  };
 
-    delete = (req: Request, res: Response) => {
-        try {
-            const id = Number(req.params.id);
-            this.booksService.deletarLivro(id);
-            return res.status(204).send();
-        } catch (error: any) {
-            return res.status(404).json({message: error.message})
-        }
+  getById = (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      const book = this.booksService.getLivroById(id);
+      return res.status(200).json(book);
+    } catch (error) {
+      return res.status(getStatusCode(error)).json({ message: getErrorMessage(error) });
     }
+  };
+
+  create = (req: Request, res: Response) => {
+    try {
+      const book = this.booksService.criarLivro(req.body);
+      return res.status(201).json(book);
+    } catch (error) {
+      return res.status(getStatusCode(error)).json({ message: getErrorMessage(error) });
+    }
+  };
+
+  update = (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      const updatedBook = this.booksService.atualizarLivro(id, req.body);
+      return res.status(200).json(updatedBook);
+    } catch (error) {
+      return res.status(getStatusCode(error)).json({ message: getErrorMessage(error) });
+    }
+  };
+
+  delete = (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      this.booksService.deletarLivro(id);
+      return res.status(204).send();
+    } catch (error) {
+      return res.status(getStatusCode(error)).json({ message: getErrorMessage(error) });
+    }
+  };
 }
