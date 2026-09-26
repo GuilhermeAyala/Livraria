@@ -1,51 +1,47 @@
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
-const usuarioRepository = (prisma as any).user;
+import { prisma } from "../prismaClient";
 
 export type UsuarioData = {
-  nome: string;
+  name: string;
   email: string;
-  senha: string;
-  CPF: string;
-  CEP: string;
+  passwordHash: string;
+  address?: string;
 };
 
 export type UsuarioUpdateData = Partial<UsuarioData>;
 
 export async function listarUsuarios() {
-  return usuarioRepository.findMany({
+  return prisma.user.findMany({
     orderBy: { id: "asc" },
   });
 }
 
 export async function buscarUsuarioPorId(id: number) {
-  return usuarioRepository.findUnique({
+  return prisma.user.findUnique({
     where: { id },
   });
 }
 
 export async function buscarUsuarioPorEmail(email: string) {
-  return usuarioRepository.findUnique({
+  return prisma.user.findUnique({
     where: { email },
   });
 }
 
 export async function criarUsuario(dados: UsuarioData) {
-  return usuarioRepository.create({
+  return prisma.user.create({
     data: dados,
   });
 }
 
 export async function editarUsuario(id: number, dados: UsuarioUpdateData) {
-  return usuarioRepository.update({
+  return prisma.user.update({
     where: { id },
     data: dados,
   });
 }
 
 export async function excluirUsuario(id: number) {
-  return usuarioRepository.delete({
+  return prisma.user.delete({
     where: { id },
   });
 }

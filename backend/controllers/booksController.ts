@@ -14,48 +14,48 @@ function getErrorMessage(error: unknown) {
 export class BooksController {
   constructor(private booksService: BooksService) {}
 
-  getAll = (_req: Request, res: Response) => {
+  getAll = async (_req: Request, res: Response) => {
     try {
-      const books = this.booksService.listarLivros();
+      const books = await this.booksService.listarLivros();
       return res.status(200).json(books);
     } catch (error) {
       return res.status(500).json({ message: getErrorMessage(error) });
     }
   };
 
-  getById = (req: Request, res: Response) => {
+  getById = async (req: Request, res: Response) => {
     try {
       const id = Number(req.params.id);
-      const book = this.booksService.getLivroById(id);
+      const book = await this.booksService.getLivroById(id);
       return res.status(200).json(book);
     } catch (error) {
       return res.status(getStatusCode(error)).json({ message: getErrorMessage(error) });
     }
   };
 
-  create = (req: Request, res: Response) => {
+  create = async (req: Request, res: Response) => {
     try {
-      const book = this.booksService.criarLivro(req.body);
+      const book = await this.booksService.criarLivro(req.body);
       return res.status(201).json(book);
     } catch (error) {
       return res.status(getStatusCode(error)).json({ message: getErrorMessage(error) });
     }
   };
 
-  update = (req: Request, res: Response) => {
+  update = async (req: Request, res: Response) => {
     try {
       const id = Number(req.params.id);
-      const updatedBook = this.booksService.atualizarLivro(id, req.body);
+      const updatedBook = await this.booksService.atualizarLivro(id, req.body);
       return res.status(200).json(updatedBook);
     } catch (error) {
       return res.status(getStatusCode(error)).json({ message: getErrorMessage(error) });
     }
   };
 
-  delete = (req: Request, res: Response) => {
+  delete = async (req: Request, res: Response) => {
     try {
       const id = Number(req.params.id);
-      this.booksService.deletarLivro(id);
+      await this.booksService.deletarLivro(id);
       return res.status(204).send();
     } catch (error) {
       return res.status(getStatusCode(error)).json({ message: getErrorMessage(error) });

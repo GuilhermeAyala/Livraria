@@ -12,6 +12,7 @@ type BookPayload = Partial<{
   ano: number;
   price: number;
   valor: number;
+  quantity: number;
   quantidade: number;
   isAvailable: boolean;
 }>;
@@ -57,7 +58,7 @@ function montarLivro(payload: BookPayload): BookCreateData {
     autor: normalizarTexto(payload.autor, "autor"),
     year: normalizarInteiro(payload.year ?? payload.ano, "year"),
     price: normalizarNumero(payload.price ?? payload.valor, "price", true),
-    quantidade: normalizarInteiro(payload.quantidade, "quantidade"),
+    quantity: normalizarInteiro(payload.quantity ?? payload.quantidade, "quantity"),
     isAvailable: payload.isAvailable ?? true,
   };
 }
@@ -77,8 +78,8 @@ function montarAtualizacao(payload: BookPayload): BookUpdateData {
   if (payload.price !== undefined || payload.valor !== undefined) {
     data.price = normalizarNumero(payload.price ?? payload.valor, "price", true);
   }
-  if (payload.quantidade !== undefined) {
-    data.quantidade = normalizarInteiro(payload.quantidade, "quantidade");
+  if (payload.quantity !== undefined || payload.quantidade !== undefined) {
+    data.quantity = normalizarInteiro(payload.quantity ?? payload.quantidade, "quantity");
   }
   if (payload.isAvailable !== undefined) {
     data.isAvailable = Boolean(payload.isAvailable);
@@ -98,10 +99,10 @@ export class BooksService {
     return this.booksRepository.findAll();
   }
 
-  getLivroById(id: number) {
+  async getLivroById(id: number) {
     validarId(id);
 
-    const book = this.booksRepository.findById(id);
+    const book = await this.booksRepository.findById(id);
 
     if (!book) {
       throw new Error("Livro nao encontrado.");
@@ -115,10 +116,10 @@ export class BooksService {
     return this.booksRepository.create(data);
   }
 
-  atualizarLivro(id: number, payload: BookPayload) {
-    this.getLivroById(id);
+  async atualizarLivro(id: number, payload: BookPayload) {
+    await this.getLivroById(id);
     const data = montarAtualizacao(payload);
-    const updatedBook = this.booksRepository.update(id, data);
+    const updatedBook = await this.booksRepository.update(id, data);
 
     if (!updatedBook) {
       throw new Error("Livro nao encontrado.");
@@ -127,13 +128,10 @@ export class BooksService {
     return updatedBook;
   }
 
-  deletarLivro(id: number) {
+  async deletarLivro(id: number) {
     validarId(id);
 
-    const deleted = this.booksRepository.delete(id);
-
-    if (!deleted) {
-      throw new Error("Livro nao encontrado.");
-    }
+    await this.getLivroById(id);
+    await this.booksRepository.delete(id);
   }
 }

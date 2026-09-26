@@ -11,35 +11,34 @@ import {
 } from "../repositories/userRepository";
 
 type UsuarioPayload = Partial<{
+  name: string;
   nome: string;
   email: string;
   password: string;
-  CPF: string;
+  passwordHash: string;
+  address: string;
   CEP: string;
 }>;
 
 const caracterEspecial = ["@", "!", "&", "*", "?", "#", "+", "-"];
-const emailsValidos = ["outlook", "gmail", "yahoo", "hotmail"];
+const emailsValidos = ["outlook", "gmail", "yahoo", "hotmail", "livraria"];
 
 function validarUsuario(user: User) {
   const temCaracterEspecial = caracterEspecial.some((caracter) =>
-    user.password.includes(caracter)
+    user.passwordHash.includes(caracter)
   );
   const temEmailValido = emailsValidos.some((email) =>
     user.email.includes(email)
   );
 
-  if (!user.nome || !user.email || !user.password || !user.CPF || !user.CEP) {
-    throw new Error("O usuario deve ter nome, email, senha, cep, cpf preenchidos");
-  }
-  if (user.CPF.length != 11) {
-    throw new Error("CPF deve conter 11 caracteres");
+  if (!user.name || !user.email || !user.passwordHash) {
+    throw new Error("O usuario deve ter nome, email e senha preenchidos.");
   }
   if (!user.email.includes("@") || !temEmailValido) {
-    throw new Error("Email deve ter @ e deve ter endereco valido");
+    throw new Error("Email deve ter @ e deve ter endereco valido.");
   }
-  if (user.password.length < 10 || !temCaracterEspecial) {
-    throw new Error("A senha deve ter pelo menos 10 caracteres e um caractere especial");
+  if (user.passwordHash.length < 4 || !temCaracterEspecial) {
+    throw new Error("A senha deve ter pelo menos 4 caracteres e um caractere especial.");
   }
 }
 
@@ -57,44 +56,43 @@ function normalizarTexto(valor: string | undefined, campo: string) {
   return valor.trim();
 }
 
+function normalizarTextoOpcional(valor: string | undefined) {
+  return typeof valor === "string" && valor.trim() ? valor.trim() : undefined;
+}
+
 function montarUser(payload: UsuarioPayload, id = 0) {
   return new User(
     id,
-    normalizarTexto(payload.nome, "nome"),
+    normalizarTexto(payload.name ?? payload.nome, "name"),
     normalizarTexto(payload.email, "email"),
-    normalizarTexto(payload.password, "password"),
-    normalizarTexto(payload.CPF, "CPF"),
-    normalizarTexto(payload.CEP, "CEP")
+    normalizarTexto(payload.passwordHash ?? payload.password, "password"),
+    normalizarTextoOpcional(payload.address ?? payload.CEP)
   );
 }
 
 function usuarioParaData(user: User): UsuarioData {
   return {
-    nome: user.nome,
+    name: user.name,
     email: user.email,
-    senha: user.password,
-    CPF: user.CPF,
-    CEP: user.CEP,
+    passwordHash: user.passwordHash,
+    address: user.address,
   };
 }
 
 function montarAtualizacao(payload: UsuarioPayload): UsuarioUpdateData {
   const dados: UsuarioUpdateData = {};
 
-  if (payload.nome !== undefined) {
-    dados.nome = normalizarTexto(payload.nome, "nome");
+  if (payload.name !== undefined || payload.nome !== undefined) {
+    dados.name = normalizarTexto(payload.name ?? payload.nome, "name");
   }
   if (payload.email !== undefined) {
     dados.email = normalizarTexto(payload.email, "email");
   }
-  if (payload.password !== undefined) {
-    dados.senha = normalizarTexto(payload.password, "password");
+  if (payload.passwordHash !== undefined || payload.password !== undefined) {
+    dados.passwordHash = normalizarTexto(payload.passwordHash ?? payload.password, "password");
   }
-  if (payload.CPF !== undefined) {
-    dados.CPF = normalizarTexto(payload.CPF, "CPF");
-  }
-  if (payload.CEP !== undefined) {
-    dados.CEP = normalizarTexto(payload.CEP, "CEP");
+  if (payload.address !== undefined || payload.CEP !== undefined) {
+    dados.address = normalizarTextoOpcional(payload.address ?? payload.CEP);
   }
 
   if (Object.keys(dados).length === 0) {
@@ -139,11 +137,10 @@ export async function editarUsuarioService(id: number, payload: UsuarioPayload) 
 
   const usuarioEditado = new User(
     usuarioAtual.id,
-    dados.nome ?? usuarioAtual.nome,
+    dados.name ?? usuarioAtual.name,
     dados.email ?? usuarioAtual.email,
-    dados.senha ?? usuarioAtual.senha,
-    dados.CPF ?? usuarioAtual.CPF,
-    dados.CEP ?? usuarioAtual.CEP
+    dados.passwordHash ?? usuarioAtual.passwordHash,
+    dados.address ?? usuarioAtual.address ?? undefined
   );
 
   validarUsuario(usuarioEditado);

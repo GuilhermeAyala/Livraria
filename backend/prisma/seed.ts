@@ -1,64 +1,47 @@
-import { PrismaClient, Role } from "@prisma/client";
+import { prisma } from "../prismaClient";
 
-const prisma = new PrismaClient();
-
-export const livrosIniciais = [
-  {
-    name: "Crime e Castigo",
-    autor: "Dostoievsky",
-    ano: 1886,
-    price: 50.0,
-    quantidade: 2,
-    isAvailable: true,
-  },
-  {
-    name: "Dom Casmurro",
-    autor: "Machado de Assis",
-    ano: 1800,
-    price: 32.5,
-    quantidade: 2,
-    isAvailable: true,
-  },
-  {
-    name: "Os miseraveis",
-    autor: "Victor Hugo",
-    ano: 1862,
-    price: 45.0,
-    quantidade: 1,
-    isAvailable: true,
-  },
-  {
-    name: "Hamlet",
-    autor: "William Shakespeare",
-    ano: 1623,
-    price: 42.0,
-    quantidade: 1,
-    isAvailable: true,
-  },
-  {
-    name: "O Poderoso Chefao",
-    autor: "Mario Puzo",
-    ano: 1969,
-    price: 20.0,
-    quantidade: 1,
-    isAvailable: true,
-  },
-  {
-    name: "1984",
-    autor: "George Orwell",
-    ano: 1949,
-    price: 45.0,
-    quantidade: 1,
-    isAvailable: true,
-  },
-  {
-    name: "O Livro Vermelho",
-    autor: "Mao Tse-Tung",
-    ano: 1954,
-    price: 23.0,
-    quantidade: 1,
-    isAvailable: true,
-  },
+const livrosIniciais = [
+  { name: "Crime e Castigo", autor: "Dostoievsky", year: 1886, price: 50, quantity: 2 },
+  { name: "Dom Casmurro", autor: "Machado de Assis", year: 1800, price: 32.5, quantity: 2 },
+  { name: "Os miseraveis", autor: "Victor Hugo", year: 1862, price: 45, quantity: 1 },
+  { name: "Hamlet", autor: "William Shakespeare", year: 1623, price: 42, quantity: 1 },
+  { name: "O Poderoso Chefao", autor: "Mario Puzo", year: 1969, price: 20, quantity: 1 },
+  { name: "1984", autor: "George Orwell", year: 1949, price: 45, quantity: 1 },
+  { name: "O Livro Vermelho", autor: "Mao Tse-Tung", year: 1954, price: 23, quantity: 1 },
 ];
 
-//simulação do banco, por hora
+async function main() {
+  await prisma.user.upsert({
+    where: { email: "admin@livraria.local" },
+    update: {},
+    create: {
+      name: "Administrador",
+      email: "admin@livraria.local",
+      passwordHash: "seed",
+      role: "ADMIN",
+    },
+  });
+
+  await prisma.user.upsert({
+    where: { email: "usuario1@livraria.local" },
+    update: {},
+    create: {
+      name: "Usuario Demo",
+      email: "usuario1@livraria.local",
+      passwordHash: "seed",
+      role: "USER",
+    },
+  });
+
+  for (const [index, livro] of livrosIniciais.entries()) {
+    await prisma.book.upsert({
+      where: { id: index + 1 },
+      update: { ...livro, isAvailable: livro.quantity > 0 },
+      create: { id: index + 1, ...livro, isAvailable: livro.quantity > 0 },
+    });
+  }
+}
+
+main().finally(async () => {
+  await prisma.$disconnect();
+});
