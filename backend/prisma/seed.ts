@@ -1,4 +1,5 @@
 import { prisma } from "../prismaClient";
+//dados de desenvolvimento - dados oficiais da aplicação em Books, já estão no postgres e funcionando
 
 const livrosIniciais = [
   { name: "Crime e Castigo", autor: "Dostoievsky", year: 1886, price: 50, quantity: 2 },
