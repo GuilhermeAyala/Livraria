@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { books as livrosIniciais } from "../data/books";
 import { Book } from "../models/booksModel";
 
 type LivroForm = {
@@ -7,112 +6,117 @@ type LivroForm = {
   autor: string;
   year: number;
   price: number;
-  quantidade: number;
+  quantity: number;
   isAvailable: boolean;
 };
 
 type LivrosContextType = {
   livros: Book[];
-  adicionarLivro: (livro: LivroForm) => void;
-  editarLivro: (id: number, dados: LivroForm) => void;
-  excluirLivro: (id: number) => void;
+  carregando: boolean;
+  erro: string;
+  adicionarLivro: (livro: LivroForm) => Promise<void>;
+  editarLivro: (id: number, dados: LivroForm) => Promise<void>;
+  excluirLivro: (id: number) => Promise<void>;
+  avaliarLivro: (id: number, rating: number) => Promise<void>;
 };
 
-const STORAGE_KEY = "livros_admin";
+const API_URL = "http://localhost:4000";
 const LivrosContext = createContext<LivrosContextType | null>(null);
 
-function criarBook(livro: Book): Book {
+function criarBook(livro: any): Book {
   return new Book(
-    livro.id,
+    Number(livro.id),
     livro.name,
     livro.autor,
-    livro.year,
-    livro.price,
-    livro.quantidade,
-    livro.isAvailable
+    Number(livro.year),
+    Number(livro.price),
+    Number(livro.quantity ?? livro.quantidade ?? 0),
+    Boolean(livro.isAvailable),
+    livro.averageRating === null || livro.averageRating === undefined ? null : Number(livro.averageRating),
+    Number(livro.ratingCount ?? 0),
+    livro.myRating === null || livro.myRating === undefined ? null : Number(livro.myRating)
   );
 }
 
-function reordenarIds(livros: Book[]): Book[] {
-  return livros.map(
-    (livro, index) =>
-      new Book(
-        index,
-        livro.name,
-        livro.autor,
-        livro.year,
-        livro.price,
-        livro.quantidade,
-        livro.isAvailable
-      )
-  );
+function getUserId() {
+  return localStorage.getItem("livraria_user_id") ?? "";
+}
+
+async function request(path: string, options: RequestInit = {}) {
+  const userId = getUserId();
+  const headers = new Headers(options.headers);
+  headers.set("Content-Type", "application/json");
+  if (userId) headers.set("x-user-id", userId);
+
+  const response = await fetch(`${API_URL}${path}`, { ...options, headers });
+  const data = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    throw new Error(data?.message ?? "Nao foi possivel acessar os livros.");
+  }
+
+  return data;
 }
 
 export const LivrosProvider = ({ children }: { children: React.ReactNode }) => {
-  const [livros, setLivros] = useState<Book[]>(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return livrosIniciais.map(criarBook);
-
-      const livrosSalvos = JSON.parse(raw) as Book[];
-      return livrosSalvos.map(criarBook);
-    } catch {
-      return livrosIniciais.map(criarBook);
-    }
-  });
+  const [livros, setLivros] = useState<Book[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(livros));
-    } catch {}
-  }, [livros]);
+    let ativo = true;
 
-  const adicionarLivro = (livro: LivroForm) => {
-    setLivros((livrosAtuais) => {
-      const maiorId = livrosAtuais.reduce((maior, item) => Math.max(maior, item.id), -1);
-      return [
-        ...livrosAtuais,
-        new Book(
-          maiorId + 1,
-          livro.name,
-          livro.autor,
-          livro.year,
-          livro.price,
-          livro.quantidade,
-          livro.isAvailable
-        ),
-      ];
+    const carregarLivros = () => {
+      setCarregando(true);
+      request("/books")
+        .then((data) => {
+          if (ativo) {
+            setLivros(Array.isArray(data) ? data.map(criarBook) : []);
+            setErro("");
+          }
+        })
+        .catch((error) => {
+          if (ativo) setErro(error instanceof Error ? error.message : "Erro ao carregar livros.");
+        })
+        .finally(() => {
+          if (ativo) setCarregando(false);
+        });
+    };
+
+    carregarLivros();
+    window.addEventListener("livraria:user-changed", carregarLivros);
+
+    return () => {
+      ativo = false;
+      window.removeEventListener("livraria:user-changed", carregarLivros);
+    };
+  }, []);
+
+  const adicionarLivro = async (livro: LivroForm) => {
+    const data = await request("/books", { method: "POST", body: JSON.stringify(livro) });
+    setLivros((atuais) => [...atuais, criarBook(data)]);
+  };
+
+  const editarLivro = async (id: number, dados: LivroForm) => {
+    const data = await request(`/books/${id}`, { method: "PUT", body: JSON.stringify(dados) });
+    setLivros((atuais) => atuais.map((livro) => (livro.id === id ? criarBook(data) : livro)));
+  };
+
+  const excluirLivro = async (id: number) => {
+    await request(`/books/${id}`, { method: "DELETE" });
+    setLivros((atuais) => atuais.filter((livro) => livro.id !== id));
+  };
+
+  const avaliarLivro = async (id: number, rating: number) => {
+    const data = await request(`/books/${id}/ratings`, {
+      method: "POST",
+      body: JSON.stringify({ rating }),
     });
-  };
-
-  const editarLivro = (id: number, dados: LivroForm) => {
-    setLivros((livrosAtuais) =>
-      livrosAtuais.map((livro) =>
-        livro.id === id
-          ? new Book(
-              id,
-              dados.name,
-              dados.autor,
-              dados.year,
-              dados.price,
-              dados.quantidade,
-              dados.isAvailable
-            )
-          : livro
-      )
-    );
-  };
-
-  const excluirLivro = (id: number) => {
-    setLivros((livrosAtuais) =>
-      reordenarIds(livrosAtuais.filter((livro) => livro.id !== id))
-    );
+    setLivros((atuais) => atuais.map((livro) => (livro.id === id ? criarBook(data) : livro)));
   };
 
   return (
-    <LivrosContext.Provider
-      value={{ livros, adicionarLivro, editarLivro, excluirLivro }}
-    >
+    <LivrosContext.Provider value={{ livros, carregando, erro, adicionarLivro, editarLivro, excluirLivro, avaliarLivro }}>
       {children}
     </LivrosContext.Provider>
   );
@@ -121,9 +125,6 @@ export const LivrosProvider = ({ children }: { children: React.ReactNode }) => {
 export const useLivros = () => {
   const contexto = useContext(LivrosContext);
 
-  if (!contexto) {
-    throw new Error("useLivros deve ser usado dentro de LivrosProvider");
-  }
-
+  if (!contexto) throw new Error("useLivros deve ser usado dentro de LivrosProvider");
   return contexto;
 };

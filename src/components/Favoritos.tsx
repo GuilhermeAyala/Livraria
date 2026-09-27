@@ -1,8 +1,18 @@
 import React from "react";
 import { useFavoritos } from "../contexts/FavoritosContext";
+import { useCarrinho } from "../contexts/CarrinhoContext";
 
 const Favoritos = () => {
   const { favoritos, removerFavorito } = useFavoritos();
+  const { adicionarAoCarrinho } = useCarrinho();
+
+  function adicionarFavoritoAoCarrinho(book: any) {
+    adicionarAoCarrinho({
+      ...book,
+      year: book.year ?? 0,
+      isAvailable: book.isAvailable ?? true,
+    });
+  }
 
   return (
     <div>
@@ -31,6 +41,14 @@ const Favoritos = () => {
               </div>
               <div>
                 <button
+                  type="button"
+                  onClick={() => adicionarFavoritoAoCarrinho(book)}
+                  style={{ borderRadius: 6, padding: "6px 8px", marginRight: 8, backgroundColor: "#d8cdbc", color: "#16130f", border: "none", cursor: "pointer" }}
+                >
+                  Adicionar ao carrinho
+                </button>
+                <button
+                  type="button"
                   onClick={() => removerFavorito(book.id)}
                   style={{ borderRadius: 6, padding: "6px 8px", backgroundColor: "#f44336", color: "#fff", border: "none", cursor: "pointer" }}
                 >

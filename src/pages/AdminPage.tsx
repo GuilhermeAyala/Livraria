@@ -11,7 +11,7 @@ type LivroForm = {
   autor: string;
   year: string;
   price: string;
-  quantidade: string;
+  quantity: string;
   isAvailable: boolean;
 };
 
@@ -20,7 +20,7 @@ const formInicial: LivroForm = {
   autor: "",
   year: "",
   price: "",
-  quantidade: "",
+  quantity: "",
   isAvailable: true,
 };
 
@@ -38,7 +38,7 @@ function livroParaForm(livro: Book): LivroForm {
     autor: livro.autor,
     year: String(livro.year),
     price: String(livro.price),
-    quantidade: String(livro.quantidade),
+    quantity: String(livro.quantity),
     isAvailable: livro.isAvailable,
   };
 }
@@ -49,7 +49,7 @@ function normalizarLivro(form: LivroForm) {
     autor: form.autor.trim(),
     year: Number(form.year),
     price: Number(form.price),
-    quantidade: Number(form.quantidade),
+    quantity: Number(form.quantity),
     isAvailable: form.isAvailable,
   };
 }
@@ -94,14 +94,14 @@ function AdminPage() {
       return "Informe um preco valido.";
     }
 
-    if (Number(form.quantidade) < 0 || Number.isNaN(Number(form.quantidade))) {
+    if (Number(form.quantity) < 0 || Number.isNaN(Number(form.quantity))) {
       return "Informe uma quantidade valida.";
     }
 
     return "";
   };
 
-  const cadastrarLivro = (event: React.FormEvent) => {
+  const cadastrarLivro = async (event: React.FormEvent) => {
     event.preventDefault();
     const erro = validarForm(formAdicionar);
 
@@ -110,9 +110,13 @@ function AdminPage() {
       return;
     }
 
-    adicionarLivro(normalizarLivro(formAdicionar));
-    setFormAdicionar(formInicial);
-    setMensagem("Livro adicionado com sucesso.");
+    try {
+      await adicionarLivro(normalizarLivro(formAdicionar));
+      setFormAdicionar(formInicial);
+      setMensagem("Livro adicionado com sucesso.");
+    } catch (error) {
+      setMensagem(error instanceof Error ? error.message : "Nao foi possivel adicionar o livro.");
+    }
   };
 
   const abrirEdicao = (livro: Book) => {
@@ -122,7 +126,7 @@ function AdminPage() {
     setMensagem("");
   };
 
-  const salvarEdicao = (event: React.FormEvent) => {
+  const salvarEdicao = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!livroEmEdicao) return;
 
@@ -133,25 +137,33 @@ function AdminPage() {
       return;
     }
 
-    editarLivro(livroEmEdicao.id, normalizarLivro(formEditar));
-    setLivroEmEdicao(null);
-    setFormEditar(formInicial);
-    setMensagem("Livro editado com sucesso.");
+    try {
+      await editarLivro(livroEmEdicao.id, normalizarLivro(formEditar));
+      setLivroEmEdicao(null);
+      setFormEditar(formInicial);
+      setMensagem("Livro editado com sucesso.");
+    } catch (error) {
+      setMensagem(error instanceof Error ? error.message : "Nao foi possivel editar o livro.");
+    }
   };
 
-  const removerLivro = (livro: Book) => {
+  const removerLivro = async (livro: Book) => {
     const confirmou = window.confirm(`Excluir "${livro.name}" da lista de livros?`);
 
     if (!confirmou) return;
 
-    excluirLivro(livro.id);
-    setLivroEmEdicao(null);
-    setMensagem("Livro excluido com sucesso. IDs reorganizados automaticamente.");
+    try {
+      await excluirLivro(livro.id);
+      setLivroEmEdicao(null);
+      setMensagem("Livro excluido com sucesso.");
+    } catch (error) {
+      setMensagem(error instanceof Error ? error.message : "Nao foi possivel excluir o livro.");
+    }
   };
 
-  const totalEstoque = livros.reduce((total, livro) => total + livro.quantidade, 0);
+  const totalEstoque = livros.reduce((total, livro) => total + livro.quantity, 0);
   const valorEmEstoque = livros.reduce(
-    (total, livro) => total + livro.price * livro.quantidade,
+    (total, livro) => total + livro.price * livro.quantity,
     0
   );
 
@@ -181,7 +193,7 @@ function AdminPage() {
           <input name="autor" placeholder="Autor" value={formAdicionar.autor} onChange={handleFormAdicionar} />
           <input name="year" type="number" placeholder="Ano" value={formAdicionar.year} onChange={handleFormAdicionar} />
           <input name="price" type="number" step="0.01" placeholder="Preco" value={formAdicionar.price} onChange={handleFormAdicionar} />
-          <input name="quantidade" type="number" placeholder="Quantidade" value={formAdicionar.quantidade} onChange={handleFormAdicionar} />
+          <input name="quantity" type="number" placeholder="Quantidade" value={formAdicionar.quantity} onChange={handleFormAdicionar} />
           <label className="admin-checkbox">
             <input name="isAvailable" type="checkbox" checked={formAdicionar.isAvailable} onChange={handleFormAdicionar} />
             Disponivel
@@ -217,7 +229,7 @@ function AdminPage() {
                 <td>{livro.autor}</td>
                 <td>{livro.year}</td>
                 <td>R$ {livro.price.toFixed(2)}</td>
-                <td>{livro.quantidade}</td>
+                <td>{livro.quantity}</td>
                 <td>{livro.isAvailable ? "Sim" : "Nao"}</td>
                 <td>
                   <button type="button" onClick={() => abrirEdicao(livro)}>Editar</button>
@@ -253,7 +265,7 @@ function AdminPage() {
             {livros.map((livro) => (
               <tr key={livro.id}>
                 <td>{livro.name}</td>
-                <td>{livro.quantidade}</td>
+                <td>{livro.quantity}</td>
                 <td>R$ {livro.price.toFixed(2)}</td>
                 <td>R$ {livro.getTotal().toFixed(2)}</td>
                 <td>{livro.isAvailable ? "Disponivel" : "Indisponivel"}</td>
@@ -308,7 +320,7 @@ function AdminPage() {
               <input name="autor" placeholder="Autor" value={formEditar.autor} onChange={handleFormEditar} />
               <input name="year" type="number" placeholder="Ano" value={formEditar.year} onChange={handleFormEditar} />
               <input name="price" type="number" step="0.01" placeholder="Preco" value={formEditar.price} onChange={handleFormEditar} />
-              <input name="quantidade" type="number" placeholder="Quantidade" value={formEditar.quantidade} onChange={handleFormEditar} />
+              <input name="quantity" type="number" placeholder="Quantidade" value={formEditar.quantity} onChange={handleFormEditar} />
               <label className="admin-checkbox">
                 <input name="isAvailable" type="checkbox" checked={formEditar.isAvailable} onChange={handleFormEditar} />
                 Disponivel

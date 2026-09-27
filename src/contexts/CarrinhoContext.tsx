@@ -11,11 +11,13 @@ type CarrinhoContextType = {
  
 const CarrinhoContext = createContext<CarrinhoContextType | null>(null);
  
-const STORAGE_KEY = "carrinho";
- 
+const STORAGE_KEY = "carrinho_v2";
+const LEGACY_STORAGE_KEY = "carrinho";
+
 export const CarrinhoProvider = ({ children }: { children: React.ReactNode }) => {
   const [livrosNoCarrinho, setLivrosNoCarrinho] = useState<BookNoCarrinho[]>(() => {
     try {
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
       const raw = localStorage.getItem(STORAGE_KEY);
       return raw ? JSON.parse(raw) : [];
     } catch {

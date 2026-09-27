@@ -9,6 +9,7 @@ const booksService = new BooksService(booksRepository);
 const booksController = new BooksController(booksService);
 
 router.get("/", booksController.getAll);
+router.post("/:id/ratings", booksController.rate);
 router.get("/:id", booksController.getById);
 router.post("/", booksController.create);
 router.put("/:id", booksController.update);

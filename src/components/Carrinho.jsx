@@ -1,47 +1,36 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Carrinho } from "../data/carrinho.ts";
 import { useCarrinho } from "../contexts/CarrinhoContext.jsx";
 
 export default function CarrinhoView() {
   const navigate = useNavigate();
   const { livrosNoCarrinho, alterarQuantidade, removerDoCarrinho } = useCarrinho();
 
-  const carrinho = useMemo(() => new Carrinho(livrosNoCarrinho), [livrosNoCarrinho]);
-  const detalhes = useMemo(() => carrinho.detalheDaCompra(), [carrinho]);
-
   const subtotal = livrosNoCarrinho.reduce(
-    (acc, b) => acc + (Number(b.price) || 0) * (Number(b.quantidade) || 0),
+    (acc, book) => acc + (Number(book.price) || 0) * (Number(book.quantidade) || 0),
     0
   );
 
-  const finalizar = () => {
-    const resultado = carrinho.finalizarPagamento("Dinheiro", 300);
-    if (resultado?.sucesso) {
-      alert(
-        `Compra finalizada! Método: ${resultado.metodoPagamento} | Total: ${resultado.total} | Troco: ${resultado.troco ?? 0}`
-      );
-    } else {
-      alert("A compra não pode ser finalizada.");
-    }
+  const irParaPagamento = () => {
+    navigate("/user/Pagamento", { state: { subtotal } });
   };
 
   return (
     <div style={{ padding: 16 }}>
-      <h1>🛍 Carrinho</h1>
+      <h1>Carrinho</h1>
       {livrosNoCarrinho.length === 0 ? (
-        <p>Carrinho Vazio</p>
+        <p>Carrinho vazio</p>
       ) : (
         <>
           <table border="1" cellPadding="8" style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
-                <th>Título</th>
+                <th>Titulo</th>
                 <th>Autor</th>
-                <th>Preço</th>
+                <th>Preco</th>
                 <th>Qtd</th>
                 <th>Total</th>
-                <th>Ações</th>
+                <th>Acoes</th>
               </tr>
             </thead>
             <tbody>
@@ -55,13 +44,19 @@ export default function CarrinhoView() {
                       type="number"
                       min="0"
                       value={book.quantidade}
-                      onChange={(e) => alterarQuantidade(book.id, e.target.value)}
+                      onChange={(event) => alterarQuantidade(book.id, event.target.value)}
                       style={{ width: 60 }}
                     />
                   </td>
                   <td>R$ {(book.price * book.quantidade).toFixed(2)}</td>
                   <td>
-                    <button style={{backgroundColor: "red", padding: 1.5, width: 100}} onClick={() => removerDoCarrinho(book.id)}>Remover</button>
+                    <button
+                      type="button"
+                      style={{ backgroundColor: "red", padding: 1.5, width: 100 }}
+                      onClick={() => removerDoCarrinho(book.id)}
+                    >
+                      Remover
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -74,16 +69,11 @@ export default function CarrinhoView() {
 
           <div style={{ marginTop: 12 }}>
             <button
+              type="button"
               style={{ width: 200, height: 50, backgroundColor: "red", borderRadius: 10, color: "white" }}
-              onClick={finalizar}
+              onClick={irParaPagamento}
             >
               Finalizar compra
-            </button>
-            <button
-              style={{ width: 200, height: 50, backgroundColor: "orange", borderRadius: 10, color: "white" }}
-              onClick={() => navigate("/user/Pagamento", { state: { subtotal } })}
-            >
-              Tela Pagamento
             </button>
           </div>
         </>

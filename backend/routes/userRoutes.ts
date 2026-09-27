@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  buscarUsuarioDemoController,
   buscarUsuarioPorIdController,
   criarUsuarioController,
   editarUsuarioController,
@@ -10,6 +11,7 @@ import {
 const router = express.Router();
 
 router.get("/", listarUsuariosController);
+router.get("/demo", buscarUsuarioDemoController);
 router.get("/:id", buscarUsuarioPorIdController);
 router.post("/", criarUsuarioController);
 router.put("/:id", editarUsuarioController);

@@ -9,7 +9,7 @@ const UserPage = () => {
     const location = useLocation();
     const nome = location.state?.nome;
     const { adicionarAoCarrinho } = useCarrinho();
-    const { livros } = useLivros();
+    const { livros, carregando, erro } = useLivros();
 
     return(
         <div className="min-h-screen bg-zinc-900">
@@ -19,7 +19,9 @@ const UserPage = () => {
             </div>
             <h2 className="text-white text=x1 font-semibold mb-1">Seja bem vindo, <span className="text-blue-400">{nome}</span></h2>
             <p className="text-zinc-500 text-sm mb-4">Explore nosso catálogo de livros</p>
-            <ListaBooks books = {livros} handleAdicionarLivro={adicionarAoCarrinho}/>
+            {carregando && <p className="text-white">Carregando livros...</p>}
+            {erro && <p className="text-red-400">{erro}</p>}
+            {!carregando && !erro && <ListaBooks books={livros} handleAdicionarLivro={adicionarAoCarrinho}/>} 
         </div>
     )
     

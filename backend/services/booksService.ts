@@ -17,6 +17,10 @@ type BookPayload = Partial<{
   isAvailable: boolean;
 }>;
 
+type RatingPayload = {
+  rating?: unknown;
+};
+
 function validarId(id: number) {
   if (!Number.isInteger(id) || id <= 0) {
     throw new Error("Id do livro invalido.");
@@ -95,20 +99,42 @@ function montarAtualizacao(payload: BookPayload): BookUpdateData {
 export class BooksService {
   constructor(private booksRepository: BooksRepository) {}
 
-  listarLivros() {
-    return this.booksRepository.findAll();
+  listarLivros(userId?: number) {
+    return this.booksRepository.findAll(userId);
   }
 
-  async getLivroById(id: number) {
+  async getLivroById(id: number, userId?: number) {
     validarId(id);
 
-    const book = await this.booksRepository.findById(id);
+    const book = await this.booksRepository.findById(id, userId);
 
     if (!book) {
       throw new Error("Livro nao encontrado.");
     }
 
     return book;
+  }
+
+  async avaliarLivro(id: number, userId: number, payload: RatingPayload) {
+    validarId(id);
+    validarId(userId);
+
+    const livro = await this.booksRepository.findById(id, userId);
+    if (!livro) {
+      throw new Error("Livro nao encontrado.");
+    }
+
+    const usuario = await this.booksRepository.findUserById(userId);
+    if (!usuario) {
+      throw new Error("Usuario nao encontrado.");
+    }
+
+    const rating = Number(payload.rating);
+    if (!Number.isInteger(rating) || rating < 0 || rating > 5) {
+      throw new Error("A avaliacao deve ser um numero inteiro entre 0 e 5.");
+    }
+
+    return this.booksRepository.upsertRating(id, userId, rating);
   }
 
   criarLivro(payload: BookPayload) {

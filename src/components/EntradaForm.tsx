@@ -34,7 +34,7 @@ function EntradaForm({ onSubmit }: { onSubmit?: (form: EntradaFormData) => void 
     return "";
   }
 
-  function handleSubmit(event: React.FormEvent) {
+  async function handleSubmit(event: React.FormEvent) {
     event.preventDefault();
 
     const message = validarForm(form);
@@ -44,8 +44,21 @@ function EntradaForm({ onSubmit }: { onSubmit?: (form: EntradaFormData) => void 
     }
 
     if (form.email === "@user") {
-      navigate("/user", { state: { nome: form.nome } });
+      try {
+        const response = await fetch("http://localhost:4000/users/demo");
+        const usuario = await response.json();
+        if (!response.ok) throw new Error(usuario?.message || "Usuario demo nao encontrado.");
+        localStorage.setItem("livraria_user_id", String(usuario.id));
+        localStorage.setItem("livraria_user_name", form.nome);
+        window.dispatchEvent(new Event("livraria:user-changed"));
+        navigate("/user", { state: { nome: form.nome, userId: usuario.id } });
+      } catch (error) {
+        setErro(error instanceof Error ? error.message : "Nao foi possivel entrar.");
+        return;
+      }
     } else if (form.email === "@admin") {
+      localStorage.setItem("livraria_user_id", "1");
+      localStorage.setItem("livraria_user_name", form.nome);
       navigate("/admin", { state: { nome: form.nome } });
     } else {
       alert("Digite @admin ou @user");

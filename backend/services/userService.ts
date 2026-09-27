@@ -1,6 +1,6 @@
 import { User } from "../models/user";
 import {
-  buscarUsuarioPorEmail,
+  buscarUsuarioPorEmail as buscarUsuarioPorEmailRepository,
   buscarUsuarioPorId,
   criarUsuario,
   editarUsuario,
@@ -104,6 +104,10 @@ function montarAtualizacao(payload: UsuarioPayload): UsuarioUpdateData {
 
 export async function listarUsuariosService() {
   return listarUsuarios();
+}
+
+export async function buscarUsuarioPorEmail(email: string) {
+  return buscarUsuarioPorEmailRepository(email);
 }
 
 export async function buscarUsuarioPorIdService(id: number) {

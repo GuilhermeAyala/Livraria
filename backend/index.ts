@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import booksRouter from "./routes/booksRoutes";
 import userRouter from "./routes/userRoutes";
 
@@ -6,6 +7,7 @@ const app = express();
 const port = 4000;
 
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (_req, res) => {
   res.json({ message: "Backend da livraria rodando" });

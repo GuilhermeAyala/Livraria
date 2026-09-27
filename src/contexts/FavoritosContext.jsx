@@ -2,11 +2,14 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 const FavoritosContext = createContext();
+const STORAGE_KEY = "meus_favoritos_v2";
+const LEGACY_STORAGE_KEY = "meus_favoritos";
 
 export function FavoritosProvider({ children }) {
   const [favoritos, setFavoritos] = useState(() => {
     try {
-      const raw = localStorage.getItem("meus_favoritos");
+      localStorage.removeItem(LEGACY_STORAGE_KEY);
+      const raw = localStorage.getItem(STORAGE_KEY);
       return raw ? JSON.parse(raw) : [];
     } catch {
       return [];
@@ -15,14 +18,21 @@ export function FavoritosProvider({ children }) {
 
   useEffect(() => {
     try {
-      localStorage.setItem("meus_favoritos", JSON.stringify(favoritos));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(favoritos));
     } catch {}
   }, [favoritos]);
 
   function adicionarFavorito(book) {
     setFavoritos(prev => {
       if (prev.some(b => b.id === book.id)) return prev;
-      return [...prev, { id: book.id, name: book.name, autor: book.autor, price: book.price }];
+      return [...prev, {
+        id: book.id,
+        name: book.name,
+        autor: book.autor,
+        year: book.year,
+        price: book.price,
+        isAvailable: book.isAvailable,
+      }];
     });
   }
 

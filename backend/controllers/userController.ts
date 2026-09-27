@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import {
+  buscarUsuarioPorEmail,
   buscarUsuarioPorIdService,
   criarUsuarioService,
   editarUsuarioService,
@@ -15,6 +16,17 @@ function getStatusCode(error: unknown) {
 
 function getErrorMessage(error: unknown) {
   return error instanceof Error ? error.message : "Erro interno do servidor.";
+}
+
+export async function buscarUsuarioDemoController(_req: Request, res: Response) {
+  try {
+    const usuario = await buscarUsuarioPorEmail("usuario1@livraria.local");
+    if (!usuario) return res.status(404).json({ message: "Usuario demo nao encontrado." });
+
+    return res.status(200).json({ id: usuario.id, name: usuario.name, email: usuario.email, role: usuario.role });
+  } catch (error) {
+    return res.status(500).json({ message: getErrorMessage(error) });
+  }
 }
 
 export async function listarUsuariosController(_req: Request, res: Response) {

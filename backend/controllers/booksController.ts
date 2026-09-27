@@ -3,6 +3,7 @@ import { BooksService } from "../services/booksService";
 
 function getStatusCode(error: unknown) {
   if (!(error instanceof Error)) return 500;
+  if (error.message.includes("nao autenticado")) return 401;
   if (error.message.includes("nao encontrado")) return 404;
   return 400;
 }
@@ -14,9 +15,30 @@ function getErrorMessage(error: unknown) {
 export class BooksController {
   constructor(private booksService: BooksService) {}
 
-  getAll = async (_req: Request, res: Response) => {
+  private getOptionalUserId(req: Request) {
+    const rawUserId = req.header("x-user-id");
+    if (!rawUserId) return undefined;
+
+    const userId = Number(rawUserId);
+    if (!Number.isInteger(userId) || userId <= 0) {
+      throw new Error("Id do usuario invalido.");
+    }
+
+    return userId;
+  }
+
+  private getRequiredUserId(req: Request) {
+    const userId = this.getOptionalUserId(req);
+    if (!userId) {
+      throw new Error("Usuario nao autenticado.");
+    }
+
+    return userId;
+  }
+
+  getAll = async (req: Request, res: Response) => {
     try {
-      const books = await this.booksService.listarLivros();
+      const books = await this.booksService.listarLivros(this.getOptionalUserId(req));
       return res.status(200).json(books);
     } catch (error) {
       return res.status(500).json({ message: getErrorMessage(error) });
@@ -26,7 +48,18 @@ export class BooksController {
   getById = async (req: Request, res: Response) => {
     try {
       const id = Number(req.params.id);
-      const book = await this.booksService.getLivroById(id);
+      const book = await this.booksService.getLivroById(id, this.getOptionalUserId(req));
+      return res.status(200).json(book);
+    } catch (error) {
+      return res.status(getStatusCode(error)).json({ message: getErrorMessage(error) });
+    }
+  };
+
+  rate = async (req: Request, res: Response) => {
+    try {
+      const id = Number(req.params.id);
+      const userId = this.getRequiredUserId(req);
+      const book = await this.booksService.avaliarLivro(id, userId, req.body);
       return res.status(200).json(book);
     } catch (error) {
       return res.status(getStatusCode(error)).json({ message: getErrorMessage(error) });
