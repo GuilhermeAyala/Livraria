@@ -28,12 +28,12 @@ function App() {
       <Routes>
         <Route path='/' element={<EntradaForm />} />
         <Route path='/cadastro' element={<CadastroForm />} />
-        <Route path='/user' element={<ProtectedRoute><UserPage /></ProtectedRoute>} />
+        <Route path='/user' element={<ProtectedRoute role="USER"><UserPage /></ProtectedRoute>} />
         <Route path='/admin' element={<ProtectedRoute role="ADMIN"><AdminPage /></ProtectedRoute>} />
-        <Route path='/user/Carrinho' element={<ProtectedRoute><CarrinhoView /></ProtectedRoute>} />
-        <Route path='/user/Favoritos' element={<ProtectedRoute><Favoritos /></ProtectedRoute>} />
-        <Route path='/user/Profile' element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path='/user/Pagamento' element={<ProtectedRoute><Pagamento /></ProtectedRoute>}/>
+        <Route path='/user/Carrinho' element={<ProtectedRoute role="USER"><CarrinhoView /></ProtectedRoute>} />
+        <Route path='/user/Favoritos' element={<ProtectedRoute role="USER"><Favoritos /></ProtectedRoute>} />
+        <Route path='/user/Profile' element={<ProtectedRoute role="USER"><Profile /></ProtectedRoute>} />
+        <Route path='/user/Pagamento' element={<ProtectedRoute role="USER"><Pagamento /></ProtectedRoute>}/>
       </Routes>
     </LivrosProvider>
     </PedidoProvider>

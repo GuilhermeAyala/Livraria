@@ -32,3 +32,17 @@ export function requireAdmin(req: AuthenticatedRequest, res: Response, next: Nex
   }
   return next();
 }
+
+export function requireSelfOrAdmin(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  const requestedUserId = Number(req.params.id);
+
+  if (!Number.isInteger(requestedUserId) || requestedUserId <= 0) {
+    return res.status(400).json({ message: "Id do usuario invalido." });
+  }
+
+  if (req.userRole === "ADMIN" || req.userId === requestedUserId) {
+    return next();
+  }
+
+  return res.status(403).json({ message: "Voce so pode alterar a sua propria conta." });
+}
