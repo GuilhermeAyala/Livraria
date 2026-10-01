@@ -60,6 +60,22 @@ async function main() {
       create: { id: index + 1, ...livro, isAvailable: livro.quantity > 0 },
     });
   }
+
+  // O seed usa IDs fixos para manter os livros de desenvolvimento estaveis.
+  // Depois disso, a sequencia precisa apontar para o proximo ID disponivel.
+  const sequenceRows = await prisma.$queryRawUnsafe<Array<{ sequence_name: string | null }>>(`
+    SELECT pg_get_serial_sequence('public."Book"', 'id') AS sequence_name;
+  `);
+
+  const sequenceName = sequenceRows[0]?.sequence_name;
+  if (!sequenceName) {
+    throw new Error('A sequencia da coluna public."Book".id nao foi encontrada.');
+  }
+
+  await prisma.$executeRawUnsafe(
+    `SELECT setval($1::regclass, COALESCE((SELECT MAX(id) FROM public."Book"), 0) + 1, false);`,
+    sequenceName,
+  );
 }
 
 main().finally(async () => {
