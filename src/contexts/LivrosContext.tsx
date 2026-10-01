@@ -38,17 +38,11 @@ function criarBook(livro: any): Book {
   );
 }
 
-function getUserId() {
-  return localStorage.getItem("livraria_user_id") ?? "";
-}
-
 async function request(path: string, options: RequestInit = {}) {
-  const userId = getUserId();
   const headers = new Headers(options.headers);
   headers.set("Content-Type", "application/json");
-  if (userId) headers.set("x-user-id", userId);
 
-  const response = await fetch(`${API_URL}${path}`, { ...options, headers });
+  const response = await fetch(`${API_URL}${path}`, { ...options, headers, credentials: "include" });
   const data = await response.json().catch(() => null);
 
   if (!response.ok) {

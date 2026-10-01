@@ -1,7 +1,9 @@
 import { User } from "../models/user";
+import { hashPassword } from "../auth";
 import {
   buscarUsuarioPorEmail as buscarUsuarioPorEmailRepository,
   buscarUsuarioPorId,
+  buscarUsuarioParaEdicao,
   criarUsuario,
   editarUsuario,
   excluirUsuario,
@@ -18,15 +20,13 @@ type UsuarioPayload = Partial<{
   passwordHash: string;
   address: string;
   CEP: string;
+  CPF: string;
 }>;
 
 const caracterEspecial = ["@", "!", "&", "*", "?", "#", "+", "-"];
 const emailsValidos = ["outlook", "gmail", "yahoo", "hotmail", "livraria"];
 
 function validarUsuario(user: User) {
-  const temCaracterEspecial = caracterEspecial.some((caracter) =>
-    user.passwordHash.includes(caracter)
-  );
   const temEmailValido = emailsValidos.some((email) =>
     user.email.includes(email)
   );
@@ -37,8 +37,15 @@ function validarUsuario(user: User) {
   if (!user.email.includes("@") || !temEmailValido) {
     throw new Error("Email deve ter @ e deve ter endereco valido.");
   }
-  if (user.passwordHash.length < 4 || !temCaracterEspecial) {
-    throw new Error("A senha deve ter pelo menos 4 caracteres e um caractere especial.");
+  if (!user.passwordHash.startsWith("scrypt:")) {
+    validarSenha(user.passwordHash);
+  }
+}
+
+function validarSenha(password: string) {
+  const temCaracterEspecial = caracterEspecial.some((caracter) => password.includes(caracter));
+  if (password.length < 10 || !temCaracterEspecial) {
+    throw new Error("A senha deve ter pelo menos 10 caracteres e um caractere especial.");
   }
 }
 
@@ -66,7 +73,8 @@ function montarUser(payload: UsuarioPayload, id = 0) {
     normalizarTexto(payload.name ?? payload.nome, "name"),
     normalizarTexto(payload.email, "email"),
     normalizarTexto(payload.passwordHash ?? payload.password, "password"),
-    normalizarTextoOpcional(payload.address ?? payload.CEP)
+    normalizarTextoOpcional(payload.address ?? payload.CEP),
+    normalizarTexto(payload.CPF, "CPF")
   );
 }
 
@@ -74,8 +82,9 @@ function usuarioParaData(user: User): UsuarioData {
   return {
     name: user.name,
     email: user.email,
-    passwordHash: user.passwordHash,
+    passwordHash: hashPassword(user.passwordHash),
     address: user.address,
+    CPF: user.CPF ?? "",
   };
 }
 
@@ -89,10 +98,15 @@ function montarAtualizacao(payload: UsuarioPayload): UsuarioUpdateData {
     dados.email = normalizarTexto(payload.email, "email");
   }
   if (payload.passwordHash !== undefined || payload.password !== undefined) {
-    dados.passwordHash = normalizarTexto(payload.passwordHash ?? payload.password, "password");
+    const password = normalizarTexto(payload.passwordHash ?? payload.password, "password");
+    validarSenha(password);
+    dados.passwordHash = hashPassword(password);
   }
   if (payload.address !== undefined || payload.CEP !== undefined) {
     dados.address = normalizarTextoOpcional(payload.address ?? payload.CEP);
+  }
+  if (payload.CPF !== undefined) {
+    dados.CPF = normalizarTexto(payload.CPF, "CPF");
   }
 
   if (Object.keys(dados).length === 0) {
@@ -137,14 +151,17 @@ export async function criarUsuarioService(payload: UsuarioPayload) {
 
 export async function editarUsuarioService(id: number, payload: UsuarioPayload) {
   const usuarioAtual = await buscarUsuarioPorIdService(id);
+  const usuarioComSenha = await buscarUsuarioParaEdicao(id);
+  if (!usuarioComSenha) throw new Error("Usuario nao encontrado.");
   const dados = montarAtualizacao(payload);
 
   const usuarioEditado = new User(
     usuarioAtual.id,
     dados.name ?? usuarioAtual.name,
     dados.email ?? usuarioAtual.email,
-    dados.passwordHash ?? usuarioAtual.passwordHash,
-    dados.address ?? usuarioAtual.address ?? undefined
+    usuarioComSenha.passwordHash,
+    dados.address ?? usuarioAtual.address ?? undefined,
+    dados.CPF ?? usuarioComSenha.CPF ?? undefined
   );
 
   validarUsuario(usuarioEditado);
@@ -158,6 +175,13 @@ export async function editarUsuarioService(id: number, payload: UsuarioPayload) 
   }
 
   return editarUsuario(id, dados);
+}
+
+export async function LoginAuth(id: number, email: string, password: string){
+    if(!email || !password){
+      throw new Error("Email e senha devem existir");
+    }
+    
 }
 
 export async function excluirUsuarioService(id: number) {

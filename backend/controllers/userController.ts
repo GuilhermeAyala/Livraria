@@ -51,7 +51,8 @@ export async function buscarUsuarioPorIdController(req: Request, res: Response) 
 export async function criarUsuarioController(req: Request, res: Response) {
   try {
     const usuario = await criarUsuarioService(req.body);
-    return res.status(201).json(usuario);
+    const { passwordHash: _passwordHash, ...usuarioSeguro } = usuario;
+    return res.status(201).json(usuarioSeguro);
   } catch (error) {
     return res.status(getStatusCode(error)).json({ message: getErrorMessage(error) });
   }
@@ -61,7 +62,8 @@ export async function editarUsuarioController(req: Request, res: Response) {
   try {
     const id = Number(req.params.id);
     const usuario = await editarUsuarioService(id, req.body);
-    return res.status(200).json(usuario);
+    const { passwordHash: _passwordHash, ...usuarioSeguro } = usuario;
+    return res.status(200).json(usuarioSeguro);
   } catch (error) {
     return res.status(getStatusCode(error)).json({ message: getErrorMessage(error) });
   }

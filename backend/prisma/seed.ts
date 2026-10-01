@@ -1,4 +1,8 @@
 import { prisma } from "../prismaClient";
+import { hashPassword } from "../auth";
+import dotenv from "dotenv";
+
+dotenv.config({ path: ".env.local" });
 //dados de desenvolvimento - dados oficiais da aplicação em Books, já estão no postgres e funcionando
 
 const livrosIniciais = [
@@ -12,24 +16,39 @@ const livrosIniciais = [
 ];
 
 async function main() {
+  const admin = {
+    name: process.env.DEV_ADMIN_NAME ?? "Administrador",
+    email: process.env.DEV_ADMIN_EMAIL ?? "admin@livraria.local",
+    password: process.env.DEV_ADMIN_PASSWORD ?? "Admin@12345",
+    CPF: process.env.DEV_ADMIN_CPF ?? "00000000001",
+  };
+  const user = {
+    name: process.env.DEV_USER_NAME ?? "Usuario Demo",
+    email: process.env.DEV_USER_EMAIL ?? "usuario1@livraria.local",
+    password: process.env.DEV_USER_PASSWORD ?? "Usuario@12345",
+    CPF: process.env.DEV_USER_CPF ?? "00000000002",
+  };
+
   await prisma.user.upsert({
-    where: { email: "admin@livraria.local" },
-    update: {},
+    where: { email: admin.email },
+    update: { name: admin.name, CPF: admin.CPF, passwordHash: hashPassword(admin.password) },
     create: {
-      name: "Administrador",
-      email: "admin@livraria.local",
-      passwordHash: "seed",
+      name: admin.name,
+      email: admin.email,
+      CPF: admin.CPF,
+      passwordHash: hashPassword(admin.password),
       role: "ADMIN",
     },
   });
 
   await prisma.user.upsert({
-    where: { email: "usuario1@livraria.local" },
-    update: {},
+    where: { email: user.email },
+    update: { name: user.name, CPF: user.CPF, passwordHash: hashPassword(user.password) },
     create: {
-      name: "Usuario Demo",
-      email: "usuario1@livraria.local",
-      passwordHash: "seed",
+      name: user.name,
+      email: user.email,
+      CPF: user.CPF,
+      passwordHash: hashPassword(user.password),
       role: "USER",
     },
   });

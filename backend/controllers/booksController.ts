@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { BooksService } from "../services/booksService";
+import type { AuthenticatedRequest } from "../middleware/session";
 
 function getStatusCode(error: unknown) {
   if (!(error instanceof Error)) return 500;
@@ -15,19 +16,11 @@ function getErrorMessage(error: unknown) {
 export class BooksController {
   constructor(private booksService: BooksService) {}
 
-  private getOptionalUserId(req: Request) {
-    const rawUserId = req.header("x-user-id");
-    if (!rawUserId) return undefined;
-
-    const userId = Number(rawUserId);
-    if (!Number.isInteger(userId) || userId <= 0) {
-      throw new Error("Id do usuario invalido.");
-    }
-
-    return userId;
+  private getOptionalUserId(req: AuthenticatedRequest) {
+    return req.userId;
   }
 
-  private getRequiredUserId(req: Request) {
+  private getRequiredUserId(req: AuthenticatedRequest) {
     const userId = this.getOptionalUserId(req);
     if (!userId) {
       throw new Error("Usuario nao autenticado.");
@@ -36,7 +29,7 @@ export class BooksController {
     return userId;
   }
 
-  getAll = async (req: Request, res: Response) => {
+  getAll = async (req: AuthenticatedRequest, res: Response) => {
     try {
       const books = await this.booksService.listarLivros(this.getOptionalUserId(req));
       return res.status(200).json(books);
@@ -45,7 +38,7 @@ export class BooksController {
     }
   };
 
-  getById = async (req: Request, res: Response) => {
+  getById = async (req: AuthenticatedRequest, res: Response) => {
     try {
       const id = Number(req.params.id);
       const book = await this.booksService.getLivroById(id, this.getOptionalUserId(req));
@@ -55,7 +48,7 @@ export class BooksController {
     }
   };
 
-  rate = async (req: Request, res: Response) => {
+  rate = async (req: AuthenticatedRequest, res: Response) => {
     try {
       const id = Number(req.params.id);
       const userId = this.getRequiredUserId(req);

@@ -1,9 +1,11 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
 import BarraDePesquisa from './BarraDePesquisa';
+import { useAuth } from '../contexts/AuthContext';
 
-const Menu = ({nome = ''}) => {
+const Menu = () => {
     const navigate = useNavigate();
+    const { usuario, logout } = useAuth();
 
     const EnterCarrinho = () => {
         navigate('/user/Carrinho');
@@ -14,7 +16,12 @@ const Menu = ({nome = ''}) => {
     }
 
     const EnterPerfil = () => {
-        navigate('/user/Profile', {state: {nome}});
+        navigate('/user/Profile');
+    }
+
+    const sair = async () => {
+        await logout();
+        navigate('/');
     }
 
     return(
@@ -31,7 +38,10 @@ const Menu = ({nome = ''}) => {
                     <button style={{backgroundColor: 'yellow'}} onClick={EnterFavoritos}>Favoritos</button>
                 </li>
                 <li>
-                    <button style={{backgroundColor: 'lightblue'}} onClick={EnterPerfil}>Ver Perfil</button>
+                    <button style={{backgroundColor: 'lightblue'}} onClick={EnterPerfil}>Perfil de {usuario?.name}</button>
+                </li>
+                <li>
+                    <button onClick={sair}>Sair</button>
                 </li>
             </ul>
         </div>

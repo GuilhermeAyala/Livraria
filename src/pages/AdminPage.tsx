@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
 import { useLivros } from "../contexts/LivrosContext";
 import { statusPedido, usePedido } from "../contexts/PedidoContext";
 import { Book } from "../models/booksModel";
+import { useAuth } from "../contexts/AuthContext";
 
 type AdminTab = "adicionar" | "lista" | "estoque" | "pedido" | "financeiro";
 
@@ -55,8 +55,7 @@ function normalizarLivro(form: LivroForm) {
 }
 
 function AdminPage() {
-  const location = useLocation();
-  const nome = location.state?.nome;
+  const { usuario } = useAuth();
   const { livros, adicionarLivro, editarLivro, excluirLivro } = useLivros();
   const { pedido, atualizarStatusPedido, cancelarPedido } = usePedido();
   const [formAdicionar, setFormAdicionar] = useState<LivroForm>(formInicial);
@@ -170,7 +169,7 @@ function AdminPage() {
   return (
     <div className="admin-page">
       <h2>Painel Administrativo</h2>
-      <p>Seja bem vindo, {nome || "admin"}.</p>
+      <p>Seja bem vindo, {usuario?.name || "admin"}.</p>
 
       <nav className="admin-tabs" aria-label="Navegacao do painel administrativo">
         {abasAdmin.map((aba) => (

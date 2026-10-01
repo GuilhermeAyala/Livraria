@@ -2,41 +2,32 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 const FavoritosContext = createContext();
-const STORAGE_KEY = "meus_favoritos_v2";
-const LEGACY_STORAGE_KEY = "meus_favoritos";
+const API_URL = "http://localhost:4000";
 
 export function FavoritosProvider({ children }) {
-  const [favoritos, setFavoritos] = useState(() => {
-    try {
-      localStorage.removeItem(LEGACY_STORAGE_KEY);
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch {
-      return [];
-    }
-  });
+  const [favoritos, setFavoritos] = useState([]);
 
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(favoritos));
-    } catch {}
-  }, [favoritos]);
+    const carregar = async () => {
+      const response = await fetch(`${API_URL}/me/favorites`, { credentials: "include" });
+      if (!response.ok) return setFavoritos([]);
+      const data = await response.json();
+      setFavoritos(Array.isArray(data) ? data : []);
+    };
+    carregar().catch(() => setFavoritos([]));
+    window.addEventListener("livraria:user-changed", carregar);
+    return () => window.removeEventListener("livraria:user-changed", carregar);
+  }, []);
 
-  function adicionarFavorito(book) {
-    setFavoritos(prev => {
-      if (prev.some(b => b.id === book.id)) return prev;
-      return [...prev, {
-        id: book.id,
-        name: book.name,
-        autor: book.autor,
-        year: book.year,
-        price: book.price,
-        isAvailable: book.isAvailable,
-      }];
-    });
+  async function adicionarFavorito(book) {
+    const response = await fetch(`${API_URL}/me/favorites`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ bookId: book.id }) });
+    if (!response.ok) throw new Error("Nao foi possivel favoritar o livro.");
+    const salvo = await response.json();
+    setFavoritos(prev => prev.some(b => b.id === salvo.id) ? prev : [...prev, salvo]);
   }
 
-  function removerFavorito(id) {
+  async function removerFavorito(id) {
+    await fetch(`${API_URL}/me/favorites/${id}`, { method: "DELETE", credentials: "include" });
     setFavoritos(prev => prev.filter(b => b.id !== id));
   }
 

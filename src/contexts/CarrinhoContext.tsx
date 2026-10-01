@@ -11,47 +11,43 @@ type CarrinhoContextType = {
  
 const CarrinhoContext = createContext<CarrinhoContextType | null>(null);
  
-const STORAGE_KEY = "carrinho_v2";
-const LEGACY_STORAGE_KEY = "carrinho";
+const API_URL = "http://localhost:4000";
 
 export const CarrinhoProvider = ({ children }: { children: React.ReactNode }) => {
-  const [livrosNoCarrinho, setLivrosNoCarrinho] = useState<BookNoCarrinho[]>(() => {
-    try {
-      localStorage.removeItem(LEGACY_STORAGE_KEY);
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch {
-      return [];
-    }
-  });
- 
+  const [livrosNoCarrinho, setLivrosNoCarrinho] = useState<BookNoCarrinho[]>([]);
+
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(livrosNoCarrinho));
-    } catch {}
-  }, [livrosNoCarrinho]);
+    const carregar = async () => {
+      const response = await fetch(`${API_URL}/me/cart`, { credentials: "include" });
+      if (!response.ok) return setLivrosNoCarrinho([]);
+      const data = await response.json();
+      setLivrosNoCarrinho(Array.isArray(data) ? data : []);
+    };
+    carregar().catch(() => setLivrosNoCarrinho([]));
+    window.addEventListener("livraria:user-changed", carregar);
+    return () => window.removeEventListener("livraria:user-changed", carregar);
+  }, []);
  
-  const adicionarAoCarrinho = (book: Book) => {
+  const adicionarAoCarrinho = async (book: Book) => {
+    const response = await fetch(`${API_URL}/me/cart`, {
+      method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ bookId: book.id }),
+    });
+    if (!response.ok) throw new Error("Nao foi possivel adicionar o livro ao carrinho.");
+    const atualizado = await response.json();
     setLivrosNoCarrinho((prev) => {
-      const existe = prev.find((b) => b.id === book.id);
-      if (existe) {
-        return prev.map((b) =>
-          b.id === book.id ? { ...b, quantidade: b.quantidade + 1 } : b
-        );
-      }
-      return [...prev, bookParaCarrinho(book)];
+      const existe = prev.some((item) => item.id === atualizado.id);
+      return existe ? prev.map((item) => item.id === atualizado.id ? atualizado : item) : [...prev, atualizado];
     });
   };
  
-  const alterarQuantidade = (id: number, qtd: string) => {
-    setLivrosNoCarrinho((prev) =>
-      prev.map((b) =>
-        b.id === id ? { ...b, quantidade: Math.max(0, Number(qtd) || 0) } : b
-      )
-    );
+  const alterarQuantidade = async (id: number, qtd: string) => {
+    const quantidade = Math.max(0, Number(qtd) || 0);
+    await fetch(`${API_URL}/me/cart/${id}`, { method: "PATCH", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ quantity: quantidade }) });
+    setLivrosNoCarrinho((prev) => quantidade === 0 ? prev.filter((item) => item.id !== id) : prev.map((item) => item.id === id ? { ...item, quantidade } : item));
   };
  
-  const removerDoCarrinho = (id: number) => {
+  const removerDoCarrinho = async (id: number) => {
+    await fetch(`${API_URL}/me/cart/${id}`, { method: "DELETE", credentials: "include" });
     setLivrosNoCarrinho((prev) => prev.filter((b) => b.id !== id));
   };
  

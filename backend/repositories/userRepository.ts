@@ -5,6 +5,7 @@ export type UsuarioData = {
   email: string;
   passwordHash: string;
   address?: string;
+  CPF: string;
 };
 
 export type UsuarioUpdateData = Partial<UsuarioData>;
@@ -12,18 +13,25 @@ export type UsuarioUpdateData = Partial<UsuarioData>;
 export async function listarUsuarios() {
   return prisma.user.findMany({
     orderBy: { id: "asc" },
+    select: { id: true, name: true, email: true, role: true, address: true, createdAt: true, updatedAt: true },
   });
 }
 
 export async function buscarUsuarioPorId(id: number) {
   return prisma.user.findUnique({
     where: { id },
+    select: { id: true, name: true, email: true, role: true, address: true, createdAt: true, updatedAt: true },
   });
+}
+
+export async function buscarUsuarioParaEdicao(id: number) {
+  return prisma.user.findUnique({ where: { id } });
 }
 
 export async function buscarUsuarioPorEmail(email: string) {
   return prisma.user.findUnique({
     where: { email },
+    select: { id: true, name: true, email: true, role: true, address: true, createdAt: true, updatedAt: true },
   });
 }
 

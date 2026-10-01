@@ -7,14 +7,14 @@ import {
   excluirUsuarioController,
   listarUsuariosController,
 } from "../controllers/userController";
+import { requireAdmin, requireSession } from "../middleware/session";
 
 const router = express.Router();
 
-router.get("/", listarUsuariosController);
-router.get("/demo", buscarUsuarioDemoController);
-router.get("/:id", buscarUsuarioPorIdController);
+router.get("/", requireSession, requireAdmin, listarUsuariosController);
+router.get("/:id", requireSession, requireAdmin, buscarUsuarioPorIdController);
 router.post("/", criarUsuarioController);
-router.put("/:id", editarUsuarioController);
-router.delete("/:id", excluirUsuarioController);
+router.put("/:id", requireSession, editarUsuarioController);
+router.delete("/:id", requireSession, excluirUsuarioController);
 
 export default router;

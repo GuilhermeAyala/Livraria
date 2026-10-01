@@ -3,11 +3,13 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { AdicionarCartão, AdicionarCartaoDebito } from '../models/pagamento';
 import { useCartoes } from '../contexts/CartoesContext';
 import AcompanhamentoPedido from './AcompanhamentoPedido';
+import { useAuth } from '../contexts/AuthContext';
 
 const Profile = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const nome = location.state?.nome;
+    const { usuario, logout } = useAuth();
+    const nome = location.state?.nome ?? usuario?.name;
     const {adicionarCartao} = useCartoes();
     const [address, setAddress] = useState('');
     const [abaCartao, setAbaCartao] = useState<"Credito" | "Debito" | null>(null);
@@ -119,7 +121,7 @@ const Profile = () => {
             )}
 
             <br />
-            <button onClick={() => navigate("/")}>LogOut</button>           
+            <button onClick={async () => { await logout(); navigate("/"); }}>LogOut</button>           
         </div>
     );
 
