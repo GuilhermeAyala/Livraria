@@ -6,51 +6,83 @@ import { useCarrinho } from "../contexts/CarrinhoContext";
 const BarraDePesquisa = () => {
   const [texto, setTexto] = useState("");
   const [resultados, setResultados] = useState([]);
+  const [termoBuscado, setTermoBuscado] = useState("");
   const { livros } = useLivros();
   const { adicionarFavorito } = useFavoritos();
   const { adicionarAoCarrinho } = useCarrinho();
 
   const buscarLivros = () => {
     const query = texto.trim().toLowerCase();
+    setTermoBuscado(query);
+
     if (!query) {
       setResultados([]);
       return;
     }
 
-    setResultados(livros.filter((book) => (book.name ?? "").toLowerCase().includes(query)));
+    setResultados(
+      livros.filter((book) => {
+        const nome = (book.name ?? "").toLowerCase();
+        const autor = (book.autor ?? "").toLowerCase();
+        return nome.includes(query) || autor.includes(query);
+      })
+    );
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        placeholder="Qual livro voce procura?"
-        value={texto}
-        onChange={(event) => setTexto(event.target.value)}
-        style={{ padding: 5, borderRadius: 5, border: "1px solid black" }}
-      />
-      <button type="button" onClick={buscarLivros} style={{ padding: 5, backgroundColor: "whitesmoke" }}>
-        Buscar
-      </button>
+    <div className="search-area">
+      <form className="search-bar" onSubmit={(event) => { event.preventDefault(); buscarLivros(); }}>
+        <label className="sr-only" htmlFor="book-search">Buscar livros</label>
+        <input
+          id="book-search"
+          type="search"
+          placeholder="Buscar por titulo ou autor"
+          value={texto}
+          onChange={(event) => setTexto(event.target.value)}
+        />
+        <button className="search-bar__button" type="submit">Buscar</button>
+      </form>
 
-      {resultados.length > 0 ? (
-        <ul style={{ display: "flex", listStyle: "none", padding: 0, marginTop: 12 }}>
-          {resultados.map((book) => (
-            <li key={book.id} style={{ width: 250, height: 220, border: "2px solid black", borderRadius: 10, padding: 5, marginRight: 8 }}>
-              <h4>Titulo: {book.name}</h4>
-              <h5>Autor: {book.autor}</h5>
-              <h5>Preco: R${book.price.toFixed(2)}</h5>
-              <button type="button" onClick={() => adicionarAoCarrinho(book)} style={{ borderRadius: 10, padding: 8, backgroundColor: "grey", marginRight: 6 }}>
-                Adicionar ao Carrinho
-              </button>
-              <button type="button" onClick={() => adicionarFavorito(book)} style={{ borderRadius: 10, padding: 8, backgroundColor: "yellow" }}>
-                Favoritar
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        texto && <p>Nenhum resultado encontrado</p>
+      {termoBuscado && (
+        <section className="search-results" aria-live="polite">
+          <div className="search-results__header">
+            <div>
+              <p className="search-results__eyebrow">Resultados da busca</p>
+              <h2>Livros encontrados</h2>
+            </div>
+            <span className="search-results__count">
+              {resultados.length} {resultados.length === 1 ? "resultado" : "resultados"}
+            </span>
+          </div>
+
+          {resultados.length > 0 ? (
+            <ul className="search-results__list">
+              {resultados.map((book) => (
+                <li key={book.id} className="search-result-card">
+                  <div className="search-result-card__content">
+                    <p className="search-result-card__label">Livro</p>
+                    <h3>{book.name}</h3>
+                    <p className="search-result-card__author">{book.autor}</p>
+                    <p className="search-result-card__price">R$ {book.price.toFixed(2)}</p>
+                  </div>
+                  <div className="search-result-card__actions">
+                    <button className="search-result-card__cart" type="button" onClick={() => adicionarAoCarrinho(book)}>
+                      Adicionar ao carrinho
+                    </button>
+                    <button className="search-result-card__favorite" type="button" onClick={() => adicionarFavorito(book)}>
+                      Favoritar
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="search-results__empty">
+              <strong>Nenhum livro encontrado</strong>
+              <p>Tente buscar pelo título ou pelo nome do autor.</p>
+            </div>
+          )}
+        </section>
       )}
     </div>
   );

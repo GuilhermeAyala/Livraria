@@ -25,26 +25,21 @@ const Menu = () => {
     }
 
     return(
-        <div>
-            <ul style={{display: 'flex', listStyle: 'none', gap: 8}}>
+        <nav className="main-menu" aria-label="Navegação principal">
+            <ul className="main-menu__list">
+                <li className="main-menu__brand">Livraria</li>
 
-                <li><BarraDePesquisa/> </li>
+                <li className="main-menu__search"><BarraDePesquisa/> </li>
 
-                <li>
-                    <button style={{backgroundColor: 'red'}} onClick={EnterCarrinho}>Carrinho</button>
-                </li>
+                <li className="main-menu__actions">
+                    <button className="main-menu__button" onClick={EnterCarrinho}>Carrinho</button>
 
-                <li>
-                    <button style={{backgroundColor: 'yellow'}} onClick={EnterFavoritos}>Favoritos</button>
-                </li>
-                <li>
-                    <button style={{backgroundColor: 'lightblue'}} onClick={EnterPerfil}>Perfil de {usuario?.name}</button>
-                </li>
-                <li>
-                    <button onClick={sair}>Sair</button>
+                    <button className="main-menu__button main-menu__button--secondary" onClick={EnterFavoritos}>Favoritos</button>
+                    <button className="main-menu__button main-menu__button--secondary main-menu__profile" onClick={EnterPerfil}>Perfil de {usuario?.name}</button>
+                    <button className="main-menu__button main-menu__button--quiet" onClick={sair}>Sair</button>
                 </li>
             </ul>
-        </div>
+        </nav>
     );
 }
 

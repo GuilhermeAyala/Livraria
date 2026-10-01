@@ -57,7 +57,7 @@ function EntradaForm({ onSubmit }: { onSubmit?: (form: EntradaFormData) => void 
   return (
     <form className="box-form auth-form" onSubmit={handleSubmit}>
       <h3>Seja bem vindo!</h3>
-      <h6>Coloque suas informacoes para entrar</h6>
+      <h6>Coloque suas informações para entrar</h6>
 
       <label htmlFor="email">Email</label>
       <input

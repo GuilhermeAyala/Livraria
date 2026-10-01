@@ -294,52 +294,6 @@ ul {
   padding-left: 0;
 }
 
-body > div ul[style*="display: flex"] {
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 0.75rem !important;
-}
-
-body > div ul[style*="display: flex"] > li:first-child > div {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-body > div ul[style*="display: flex"] > li:first-child input {
-  width: clamp(14rem, 24vw, 21rem);
-  height: 2.75rem;
-}
-
-body > div ul[style*="display: flex"] > li:first-child button {
-  width: auto;
-  height: 2.75rem;
-  white-space: nowrap;
-}
-
-body > div > div > ul:first-child,
-.min-h-screen > div:first-child > ul:first-child {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  width: 100%;
-  margin: 0;
-  padding: 1rem clamp(1rem, 4vw, 3rem) !important;
-  border-bottom: 1px solid var(--line-strong);
-  background: rgba(255, 250, 240, 0.92);
-  backdrop-filter: blur(14px);
-}
-
-body > div > div > ul:first-child::before,
-.min-h-screen > div:first-child > ul:first-child::before {
-  content: "Livraria";
-  margin-right: auto;
-  color: var(--ink);
-  font-size: 1.1rem;
-  font-weight: 900;
-  text-transform: none;
-}
-
 table {
   overflow: hidden;
   width: 100%;
@@ -693,14 +647,231 @@ div[style*="margin-top: 12"] {
   background: var(--white);
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.main-menu {
+  position: relative;
+  z-index: 20;
+  width: 100%;
+  border-bottom: 1px solid var(--line-strong);
+  background: rgba(255, 250, 240, 0.94);
+  backdrop-filter: blur(14px);
+}
+
+.main-menu__list {
+  display: grid;
+  grid-template-columns: auto minmax(18rem, 1fr) minmax(0, auto);
+  align-items: start;
+  gap: 1.25rem;
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 1rem 0;
+  list-style: none;
+}
+
+.main-menu__brand {
+  align-self: start;
+  padding-top: 0.65rem;
+  color: var(--ink);
+  font-size: 1.35rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.main-menu__search {
+  min-width: 0;
+}
+
+.main-menu__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.main-menu__button {
+  width: auto !important;
+  min-height: 2.65rem;
+  white-space: nowrap;
+}
+
+.main-menu__button--secondary,
+.search-result-card__favorite {
+  color: var(--ink) !important;
+  background: var(--accent) !important;
+}
+
+.main-menu__button--quiet {
+  color: var(--ink) !important;
+  background: transparent !important;
+}
+
+.search-area {
+  width: 100%;
+  min-width: 0;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  margin: 0;
+}
+
+.search-bar input {
+  flex: 1 1 auto;
+  width: auto !important;
+  min-width: 0;
+}
+
+.search-bar__button {
+  width: auto !important;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.search-results {
+  width: min(100%, 58rem);
+  margin-top: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  background: rgba(255, 253, 248, 0.88);
+  box-shadow: 0 14px 30px rgba(22, 19, 15, 0.08);
+}
+
+.search-results__header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.85rem;
+}
+
+.search-results__eyebrow,
+.search-result-card__label {
+  margin: 0 0 0.25rem;
+  color: var(--muted) !important;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.search-results h2 {
+  margin: 0;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+  font-weight: 600;
+}
+
+.search-results__count {
+  flex: 0 0 auto;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  color: var(--ink-soft);
+  background: var(--paper);
+  font-size: 0.8rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.search-results__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15.5rem), 1fr));
+  justify-content: start;
+  gap: 0.85rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.search-result-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 13.5rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: 1rem;
+  background: var(--white);
+}
+
+.search-result-card h3 {
+  margin-bottom: 0.4rem;
+  font-size: 1.25rem;
+  line-height: 1.1;
+}
+
+.search-result-card__author {
+  margin: 0;
+  color: var(--ink-soft) !important;
+}
+
+.search-result-card__price {
+  width: fit-content;
+  margin: 1rem 0 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  padding: 0.35rem 0.7rem;
+  color: var(--ink) !important;
+  background: var(--accent);
+  font-weight: 800;
+}
+
+.search-result-card__actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.search-result-card__actions button {
+  width: auto !important;
+  min-width: 0;
+  padding-inline: 0.7rem !important;
+  font-size: 0.82rem;
+  line-height: 1.15;
+}
+
+.search-result-card__cart {
+  color: var(--white) !important;
+  background: var(--dark) !important;
+}
+
+.search-results__empty {
+  border: 1px dashed var(--line-strong);
+  border-radius: 8px;
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.search-results__empty strong {
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.search-results__empty p {
+  margin: 0 auto;
+}
+
 @media (max-width: 720px) {
   h1 {
     font-size: clamp(2.5rem, 18vw, 4rem);
-  }
-
-  body > div > div > ul:first-child,
-  .min-h-screen > div:first-child > ul:first-child {
-    position: static;
   }
 
   table {
@@ -717,19 +888,36 @@ div[style*="margin-top: 12"] {
     width: 100%;
   }
 
-  body > div ul[style*="display: flex"] > li:first-child,
-  body > div ul[style*="display: flex"] > li:first-child > div {
-    width: 100%;
+  .main-menu__list {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
   }
 
-  body > div ul[style*="display: flex"] > li:first-child > div {
+  .main-menu__actions {
+    justify-content: stretch;
+  }
+
+  .main-menu__actions .main-menu__button {
+    flex: 1 1 auto;
+  }
+
+  .search-bar {
     align-items: stretch;
     flex-direction: column;
   }
 
-  body > div ul[style*="display: flex"] > li:first-child input,
-  body > div ul[style*="display: flex"] > li:first-child button {
-    width: 100%;
+  .search-bar input,
+  .search-bar__button {
+    width: 100% !important;
+  }
+
+  .search-results__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .search-result-card__actions {
+    grid-template-columns: 1fr;
   }
 
   .order-tracking__header {
