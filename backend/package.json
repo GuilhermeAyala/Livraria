@@ -9,6 +9,9 @@
     "build": "tsc",
     "start:ts": "tsx index.ts",
     "generate": "prisma generate",
+    "db:push": "prisma db push",
+    "migrate": "prisma migrate dev",
+    "test:orders": "tsx tests/orderFlow.integration.ts",
     "seed": "tsx prisma/seed.ts",
     "sync-book-sequence": "tsx prisma/syncBookSequence.ts",
     "hash-passwords": "tsx prisma/migratePasswords.ts"

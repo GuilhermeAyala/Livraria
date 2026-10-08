@@ -99,8 +99,8 @@ function montarAtualizacao(payload: BookPayload): BookUpdateData {
 export class BooksService {
   constructor(private booksRepository: BooksRepository) {}
 
-  listarLivros(userId?: number) {
-    return this.booksRepository.findAll(userId);
+  listarLivros(userId?: number, includeUnavailable = false) {
+    return this.booksRepository.findAll(userId, includeUnavailable);
   }
 
   async getLivroById(id: number, userId?: number) {

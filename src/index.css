@@ -498,6 +498,56 @@ div[style*="margin-top: 12"] {
   white-space: nowrap;
 }
 
+.order-items {
+  margin-top: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  background: var(--paper);
+}
+
+.order-items h4 {
+  margin: 0 0 0.65rem;
+}
+
+.order-items ul {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order-items li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.order-items li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.order-items li span,
+.order-items li strong {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.order-items li strong {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.order-items small {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 400;
+}
+
 .order-timeline {
   position: relative;
   display: grid;

@@ -7,6 +7,7 @@ type CarrinhoContextType = {
   adicionarAoCarrinho: (book: Book) => void;
   alterarQuantidade: (id: number, qtd: string) => void;
   removerDoCarrinho: (id: number) => void;
+  limparCarrinho: () => void;
 };
  
 const CarrinhoContext = createContext<CarrinhoContextType | null>(null);
@@ -50,10 +51,12 @@ export const CarrinhoProvider = ({ children }: { children: React.ReactNode }) =>
     await fetch(`${API_URL}/me/cart/${id}`, { method: "DELETE", credentials: "include" });
     setLivrosNoCarrinho((prev) => prev.filter((b) => b.id !== id));
   };
+
+  const limparCarrinho = () => setLivrosNoCarrinho([]);
  
   return (
     <CarrinhoContext.Provider
-      value={{ livrosNoCarrinho, adicionarAoCarrinho, alterarQuantidade, removerDoCarrinho }}
+      value={{ livrosNoCarrinho, adicionarAoCarrinho, alterarQuantidade, removerDoCarrinho, limparCarrinho }}
     >
       {children}
     </CarrinhoContext.Provider>

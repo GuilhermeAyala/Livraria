@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 
 export type UsuarioAutenticado = {
   id: number;
@@ -11,6 +11,7 @@ export type UsuarioAutenticado = {
 type AuthContextType = {
   usuario: UsuarioAutenticado | null;
   carregando: boolean;
+  refreshSession: () => Promise<UsuarioAutenticado | null>;
   login: (email: string, password: string) => Promise<UsuarioAutenticado>;
   logout: () => Promise<void>;
 };
@@ -22,17 +23,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [usuario, setUsuario] = useState<UsuarioAutenticado | null>(null);
   const [carregando, setCarregando] = useState(true);
 
-  useEffect(() => {
-    fetch(`${API_URL}/auth/me`, { credentials: "include" })
-      .then(async (response) => {
-        if (!response.ok) return null;
-        const data = await response.json();
-        return data.user as UsuarioAutenticado;
-      })
-      .then(setUsuario)
-      .catch(() => setUsuario(null))
-      .finally(() => setCarregando(false));
+  const refreshSession = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_URL}/auth/me`, { credentials: "include" });
+      if (!response.ok) {
+        setUsuario(null);
+        return null;
+      }
+      const data = await response.json();
+      const usuarioAtual = data.user as UsuarioAutenticado;
+      setUsuario(usuarioAtual);
+      return usuarioAtual;
+    } catch {
+      setUsuario(null);
+      return null;
+    }
   }, []);
+
+  useEffect(() => {
+    void refreshSession().finally(() => setCarregando(false));
+    const atualizarAoFocar = () => void refreshSession();
+    window.addEventListener("focus", atualizarAoFocar);
+
+    return () => window.removeEventListener("focus", atualizarAoFocar);
+  }, [refreshSession]);
 
   const login = async (email: string, password: string) => {
     const response = await fetch(`${API_URL}/auth/login`, {
@@ -60,7 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ usuario, carregando, login, logout }}>
+    <AuthContext.Provider value={{ usuario, carregando, refreshSession, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -4,8 +4,9 @@ import booksRouter from "./routes/booksRoutes";
 import userRouter from "./routes/userRoutes";
 import authRouter from "./routes/authRoutes";
 import accountRouter from "./routes/accountRoutes";
+import orderRouter from "./routes/orderRoutes";
 
-const app = express();
+export const app = express();
 const port = 4000;
 
 app.use(express.json());
@@ -19,7 +20,10 @@ app.use("/books", booksRouter);
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
 app.use("/me", accountRouter);
+app.use("/orders", orderRouter);
 
-app.listen(port, () =>{
-  console.log(`Servidor backend rodando na porta ${port}`);
-});
+if (require.main === module) {
+  app.listen(port, () =>{
+    console.log(`Servidor backend rodando na porta ${port}`);
+  });
+}

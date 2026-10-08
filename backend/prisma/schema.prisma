@@ -20,8 +20,13 @@ enum PaymentMethod {
 }
 
 enum OrderStatus {
-  PENDENTE
+  AGUARDANDO_PAGAMENTO
+  PAGAMENTO_EM_ANALISE
   PAGO
+  EM_SEPARACAO
+  ENVIADO
+  SAIU_PARA_ENTREGA
+  ENTREGUE
   CANCELADO
 }
 
@@ -128,7 +133,8 @@ model Order {
   subtotal      Float
   discount      Float         @default(0)
   total         Float
-  status        OrderStatus   @default(PENDENTE)
+  paymentReference String?
+  status        OrderStatus   @default(AGUARDANDO_PAGAMENTO)
   createdAt     DateTime      @default(now())
   user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   items         OrderItem[]

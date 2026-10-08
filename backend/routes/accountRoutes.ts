@@ -23,6 +23,16 @@ router.post("/cart", async (req: AuthenticatedRequest, res) => {
 
   const book = await prisma.book.findUnique({ where: { id: bookId } });
   if (!book) return res.status(404).json({ message: "Livro nao encontrado." });
+  if (!book.isAvailable || book.quantity <= 0) {
+    return res.status(400).json({ message: "Este livro nao esta disponivel no momento." });
+  }
+
+  const cartItem = await prisma.cartItem.findUnique({
+    where: { userId_bookId: { userId: req.userId!, bookId } },
+  });
+  if ((cartItem?.quantity ?? 0) + quantity > book.quantity) {
+    return res.status(400).json({ message: "A quantidade solicitada ultrapassa o estoque disponivel." });
+  }
 
   const item = await prisma.cartItem.upsert({
     where: { userId_bookId: { userId: req.userId!, bookId } },
@@ -42,6 +52,11 @@ router.patch("/cart/:bookId", async (req: AuthenticatedRequest, res) => {
   if (quantity === 0) {
     await prisma.cartItem.deleteMany({ where: { userId: req.userId, bookId } });
     return res.status(204).send();
+  }
+  const book = await prisma.book.findUnique({ where: { id: bookId } });
+  if (!book) return res.status(404).json({ message: "Livro nao encontrado." });
+  if (!book.isAvailable || book.quantity <= 0 || quantity > book.quantity) {
+    return res.status(400).json({ message: "A quantidade solicitada nao esta disponivel em estoque." });
   }
   const item = await prisma.cartItem.update({
     where: { userId_bookId: { userId: req.userId!, bookId } },

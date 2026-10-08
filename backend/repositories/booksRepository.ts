@@ -36,8 +36,9 @@ function withRatingSummary(book: any, userId?: number) {
 }
 
 export class BooksRepository {
-  async findAll(userId?: number) {
+  async findAll(userId?: number, includeUnavailable = false) {
     const books = await prisma.book.findMany({
+      where: includeUnavailable ? undefined : { isAvailable: true, quantity: { gt: 0 } },
       orderBy: { id: "asc" },
       include: ratingsInclude,
     });

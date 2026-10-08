@@ -57,7 +57,16 @@ function normalizarLivro(form: LivroForm) {
 function AdminPage() {
   const { usuario } = useAuth();
   const { livros, adicionarLivro, editarLivro, excluirLivro } = useLivros();
-  const { pedido, atualizarStatusPedido, cancelarPedido } = usePedido();
+  const {
+    pedidos,
+    pedido,
+    carregando: carregandoPedidos,
+    erro: erroPedidos,
+    selecionarPedido,
+    atualizarPedidos,
+    atualizarStatusPedido,
+    cancelarPedido,
+  } = usePedido();
   const [formAdicionar, setFormAdicionar] = useState<LivroForm>(formInicial);
   const [livroEmEdicao, setLivroEmEdicao] = useState<Book | null>(null);
   const [formEditar, setFormEditar] = useState<LivroForm>(formInicial);
@@ -157,6 +166,26 @@ function AdminPage() {
       setMensagem("Livro excluido com sucesso.");
     } catch (error) {
       setMensagem(error instanceof Error ? error.message : "Nao foi possivel excluir o livro.");
+    }
+  };
+
+  const alterarStatusPedido = async (statusAtual: number) => {
+    if (!pedido) return;
+    try {
+      await atualizarStatusPedido(statusAtual, pedido.id);
+      setMensagem("Status do pedido atualizado.");
+    } catch (error) {
+      setMensagem(error instanceof Error ? error.message : "Nao foi possivel atualizar o pedido.");
+    }
+  };
+
+  const cancelarPedidoSelecionado = async () => {
+    if (!pedido) return;
+    try {
+      await cancelarPedido(pedido.id);
+      setMensagem("Pedido cancelado e estoque restaurado.");
+    } catch (error) {
+      setMensagem(error instanceof Error ? error.message : "Nao foi possivel cancelar o pedido.");
     }
   };
 
@@ -277,29 +306,69 @@ function AdminPage() {
 
       {abaAtiva === "pedido" && (
       <section className="admin-section">
-        <h1>Status do pedido</h1>
-        {!pedido ? (
+        <h1>Pedidos</h1>
+        <button type="button" onClick={() => void atualizarPedidos()}>Atualizar pedidos</button>
+        {carregandoPedidos ? (
+          <p>Carregando pedidos...</p>
+        ) : !pedido ? (
           <p>Nenhum pedido feito no momento.</p>
         ) : (
-          <div className="admin-order-status">
-            <p>Pedido #{pedido.id}</p>
-            <p>Valor: R$ {pedido.valor.toFixed(2)}</p>
-            <p>Pagamento: {pedido.metodoPagamento}</p>
-            <label>
-              Status:
-              <select value={pedido.statusAtual} onChange={(event) => atualizarStatusPedido(Number(event.target.value))}>
-                {statusPedido.map((status, index) => (
-                  <option key={status.titulo} value={index}>
-                    {index} - {status.titulo}
-                  </option>
+          <>
+            <table>
+              <thead>
+                <tr>
+                  <th>Pedido</th>
+                  <th>Cliente</th>
+                  <th>Data</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Acao</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pedidos.map((item) => (
+                  <tr key={item.id}>
+                    <td>#{item.id}</td>
+                    <td>{item.cliente?.nome ?? "Cliente"}</td>
+                    <td>{new Date(item.criadoEm).toLocaleString("pt-BR")}</td>
+                    <td>R$ {item.valor.toFixed(2)}</td>
+                    <td>{item.status === "CANCELADO" ? "Cancelado" : statusPedido[item.statusAtual]?.titulo}</td>
+                    <td>
+                      <button type="button" onClick={() => selecionarPedido(item.id)}>
+                        Gerenciar
+                      </button>
+                    </td>
+                  </tr>
                 ))}
-              </select>
-            </label>
-            {pedido.statusAtual <= 1 && (
-              <button type="button" onClick={cancelarPedido}>Cancelar Pedido</button>
-            )}
-          </div>
+              </tbody>
+            </table>
+
+            <div className="admin-order-status">
+              <h3>Pedido selecionado #{pedido.id}</h3>
+              <p>Cliente: {pedido.cliente?.nome ?? "Cliente"} ({pedido.cliente?.email ?? "email indisponivel"})</p>
+              <p>Valor: R$ {pedido.valor.toFixed(2)}</p>
+              <p>Pagamento: {pedido.metodoPagamento}</p>
+              {pedido.status === "CANCELADO" ? (
+                <p>Status: Cancelado</p>
+              ) : (
+                <label>
+                  Status:
+                  <select value={pedido.statusAtual} onChange={(event) => void alterarStatusPedido(Number(event.target.value))}>
+                    {statusPedido.map((status, index) => (
+                      <option key={status.titulo} value={index} disabled={index < pedido.statusAtual}>
+                        {index} - {status.titulo}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
+              {pedido.statusAtual >= 0 && pedido.statusAtual <= 3 && (
+                <button type="button" onClick={() => void cancelarPedidoSelecionado()}>Cancelar Pedido</button>
+              )}
+            </div>
+          </>
         )}
+        {(mensagem || erroPedidos) && <p>{mensagem || erroPedidos}</p>}
       </section>
       )}
 

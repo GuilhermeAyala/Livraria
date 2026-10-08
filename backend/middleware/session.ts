@@ -26,6 +26,26 @@ export async function requireSession(req: AuthenticatedRequest, res: Response, n
   }
 }
 
+export async function optionalSession(req: AuthenticatedRequest, _res: Response, next: NextFunction) {
+  try {
+    const rawToken = getSessionToken(req);
+    if (!rawToken) return next();
+
+    const session = await prisma.session.findUnique({
+      where: { id: hashSessionToken(rawToken) },
+      include: { user: { select: { id: true, role: true } } },
+    });
+
+    if (session && session.expiresAt > new Date()) {
+      req.userId = session.user.id;
+      req.userRole = session.user.role;
+    }
+    return next();
+  } catch {
+    return next();
+  }
+}
+
 export function requireAdmin(req: AuthenticatedRequest, res: Response, next: NextFunction) {
   if (req.userRole !== "ADMIN") {
     return res.status(403).json({ message: "Acesso restrito ao administrador." });

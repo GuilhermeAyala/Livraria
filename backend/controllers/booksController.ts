@@ -31,7 +31,10 @@ export class BooksController {
 
   getAll = async (req: AuthenticatedRequest, res: Response) => {
     try {
-      const books = await this.booksService.listarLivros(this.getOptionalUserId(req));
+      const books = await this.booksService.listarLivros(
+        this.getOptionalUserId(req),
+        req.userRole === "ADMIN",
+      );
       return res.status(200).json(books);
     } catch (error) {
       return res.status(500).json({ message: getErrorMessage(error) });

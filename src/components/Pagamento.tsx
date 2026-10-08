@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Pagamentos, metodoPagamento, gerarCodigoBarras} from "../models/pagamento";
+import { Pagamentos, metodoPagamento} from "../models/pagamento";
 import { useCartoes } from "../contexts/CartoesContext";
 import { usePedido } from "../contexts/PedidoContext";
+import { useCarrinho } from "../contexts/CarrinhoContext";
 
 const Pagamento = () => {
     const location = useLocation();
@@ -10,23 +11,28 @@ const Pagamento = () => {
     const subtotalInicial: number = location.state?.subtotal || 0;
     const { cartoes } = useCartoes();
     const { criarPedido } = usePedido();
+    const { livrosNoCarrinho, limparCarrinho } = useCarrinho();
 
     const [valorFinal, setValorFinal] = useState(subtotalInicial);
     const [codigoBarras, setCodigoBarras] = useState("");
     const [escolha, setEscolha] = useState<Pagamentos | null>(null);
     const [cartaoSelecionado, setCartaoSelecionado] = useState<number | null>(null);
     const [mensagem, setMensagem] = useState("");
+    const [salvando, setSalvando] = useState(false);
+    const [compraConcluida, setCompraConcluida] = useState(false);
+
+    const subtotalAtual = livrosNoCarrinho.reduce(
+      (total, book) => total + Number(book.price) * Number(book.quantidade),
+      0
+    );
+    const subtotalCompra = subtotalAtual > 0 ? subtotalAtual : subtotalInicial;
 
     const handlePagamento = (e: React.ChangeEvent<HTMLInputElement>) => {
         const escolha = Number(e.target.value) as Pagamentos;
         setEscolha(escolha);
         setCodigoBarras("");
         setCartaoSelecionado(null);
-        setValorFinal(metodoPagamento(escolha, subtotalInicial));
-
-        if(escolha === Pagamentos.Boleto){
-           setCodigoBarras(gerarCodigoBarras());
-        }
+        setValorFinal(metodoPagamento(escolha, subtotalCompra));
         
     };
 
@@ -50,16 +56,19 @@ const Pagamento = () => {
       ? "Boleto"
       : "";
 
-    const concluirCompra = () => {
+    const concluirCompra = async () => {
       setMensagem("");
+      setSalvando(true);
 
-      if (subtotalInicial <= 0) {
+      if (subtotalCompra <= 0) {
         setMensagem("Nao existe compra para concluir.");
+        setSalvando(false);
         return;
       }
 
       if (escolha === null) {
         setMensagem("Escolha uma forma de pagamento antes de concluir.");
+        setSalvando(false);
         return;
       }
 
@@ -68,20 +77,24 @@ const Pagamento = () => {
         cartaoSelecionado === null
       ) {
         setMensagem("Selecione um cartao antes de concluir a compra.");
+        setSalvando(false);
         return;
       }
 
-      const statusInicial =
-        escolha === Pagamentos.Credito || escolha === Pagamentos.Debito ? 1 : 0;
-
-      const pedido = criarPedido({
-        valor: valorFinal,
-        metodoPagamento: nomeMetodoPagamento,
-        statusAtual: statusInicial,
-        codigoBarras: escolha === Pagamentos.Boleto ? codigoBarras : undefined,
-      });
-
-      setMensagem(`Compra concluida. Pedido ${pedido.id} criado para acompanhamento.`);
+      try {
+        const pedido = await criarPedido({
+          paymentMethod: nomeMetodoPagamento.toUpperCase() as "CREDITO" | "DEBITO" | "PIX" | "BOLETO",
+        });
+        setValorFinal(pedido.valor);
+        setCodigoBarras(pedido.codigoBarras ?? "");
+        limparCarrinho();
+        setCompraConcluida(true);
+        setMensagem(`Compra concluida. Pedido ${pedido.id} criado para acompanhamento.`);
+      } catch (error) {
+        setMensagem(error instanceof Error ? error.message : "Nao foi possivel criar o pedido.");
+      } finally {
+        setSalvando(false);
+      }
     };
 
     return (
@@ -144,8 +157,8 @@ const Pagamento = () => {
         <h4>Código de barras: {codigoBarras}</h4>
       )}
 
-      <button type="button" onClick={concluirCompra}>
-        Concluir compra
+       <button type="button" onClick={concluirCompra} disabled={salvando || compraConcluida}>
+         {salvando ? "Processando..." : compraConcluida ? "Compra concluida" : "Concluir compra"}
       </button>
 
       {mensagem && <p>{mensagem}</p>}

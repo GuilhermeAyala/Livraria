@@ -31,7 +31,7 @@ async function main() {
 
   await prisma.user.upsert({
     where: { email: admin.email },
-    update: { name: admin.name, CPF: admin.CPF, passwordHash: hashPassword(admin.password) },
+    update: { name: admin.name, CPF: admin.CPF, passwordHash: hashPassword(admin.password), role: "ADMIN" },
     create: {
       name: admin.name,
       email: admin.email,
@@ -43,7 +43,7 @@ async function main() {
 
   await prisma.user.upsert({
     where: { email: user.email },
-    update: { name: user.name, CPF: user.CPF, passwordHash: hashPassword(user.password) },
+    update: { name: user.name, CPF: user.CPF, passwordHash: hashPassword(user.password), role: "USER" },
     create: {
       name: user.name,
       email: user.email,

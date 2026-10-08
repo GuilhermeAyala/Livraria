@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Book } from "../models/booksModel";
+import { useAuth } from "./AuthContext";
 
 type LivroForm = {
   name: string;
@@ -53,6 +54,7 @@ async function request(path: string, options: RequestInit = {}) {
 }
 
 export const LivrosProvider = ({ children }: { children: React.ReactNode }) => {
+  const { usuario, refreshSession } = useAuth();
   const [livros, setLivros] = useState<Book[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
@@ -84,19 +86,29 @@ export const LivrosProvider = ({ children }: { children: React.ReactNode }) => {
       ativo = false;
       window.removeEventListener("livraria:user-changed", carregarLivros);
     };
-  }, []);
+  }, [usuario?.id, usuario?.role]);
+
+  const confirmarAdministrador = async () => {
+    const sessaoAtual = await refreshSession();
+    if (!sessaoAtual || sessaoAtual.role !== "ADMIN") {
+      throw new Error("A sessao atual nao pertence a um administrador. Entre novamente com a conta admin.");
+    }
+  };
 
   const adicionarLivro = async (livro: LivroForm) => {
+    await confirmarAdministrador();
     const data = await request("/books", { method: "POST", body: JSON.stringify(livro) });
     setLivros((atuais) => [...atuais, criarBook(data)]);
   };
 
   const editarLivro = async (id: number, dados: LivroForm) => {
+    await confirmarAdministrador();
     const data = await request(`/books/${id}`, { method: "PUT", body: JSON.stringify(dados) });
     setLivros((atuais) => atuais.map((livro) => (livro.id === id ? criarBook(data) : livro)));
   };
 
   const excluirLivro = async (id: number) => {
+    await confirmarAdministrador();
     await request(`/books/${id}`, { method: "DELETE" });
     setLivros((atuais) => atuais.filter((livro) => livro.id !== id));
   };
