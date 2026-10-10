@@ -3,12 +3,12 @@
 
 Projeto de uma aplicação de livraria online, desenvolvido inicialmente com foco no frontend em React. A aplicação permite visualizar livros, pesquisar títulos, adicionar itens ao carrinho, favoritar livros e simular um fluxo de pagamento.
 
-O backend está em fase inicial de estruturação e ainda não representa a versão final fullstack do projeto.
+Aplicação funcional(backend e frontend), com escopo para futuras melhorias.
 
 ## Status do Projeto
 
 Frontend: funcional  
-Backend: em desenvolvimento
+Backend: funcional
 
 ## Tecnologias Utilizadas
 
@@ -18,7 +18,6 @@ Backend: em desenvolvimento
 - React Router DOM
 - TypeScript
 - Context API
-- LocalStorage
 - CSS
 
 ### Backend
@@ -26,7 +25,7 @@ Backend: em desenvolvimento
 - Express
 - TypeScript
 - Prisma
-- MySQL
+- PostgreSQL
 
 ## Funcionalidades Atuais
 - Login inicial simples
@@ -47,10 +46,10 @@ Backend: em desenvolvimento
 -Books
 -Users
 -Pagamento
--Carrinho
+-Order/Pedidos
 
 ## Arquitetura: 
--MVC moderno com Model, View, Controller e o Service
+-MVC moderno com Model, View, Controller, Service, Routes, Repository. 
 
 ## Organização do Frontend
 A pasta `src` está organizada da seguinte forma:
@@ -61,7 +60,22 @@ src/
   models/
   pages/
 
-
+## Organização Backend
+backend/ 
+  constants/
+  controllers/
+  middleware/
+  models/
+  prisma/
+  repositories/
+  routes/
+  services/
+  tests/
+  
 ## Subir backend 
 cd backend
+npm run dev
+
+## Subir frontend
+cd src
 npm run dev
